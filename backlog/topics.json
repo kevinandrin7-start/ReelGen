@@ -228,6 +228,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_230a04cb5e",
+      "title": "Common RAG failure modes",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127776.749,
+      "created_at": "2026-11-19T22:36:16Z",
+      "updated_at": "2026-11-19T22:36:16Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
