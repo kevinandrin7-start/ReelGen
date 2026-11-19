@@ -32,6 +32,7 @@
     send: '<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
     broadcast: '<circle cx="12" cy="12" r="2"/><path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7M5.6 18.4a9 9 0 0 1 0-12.8M18.4 5.6a9 9 0 0 1 0 12.8"/>',
     film: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 8h4M3 12h4M3 16h4M17 8h4M17 12h4M17 16h4"/>',
+    play: '<path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/>',
     rec: '<circle cx="12" cy="12" r="5" fill="currentColor"/>',
   };
 

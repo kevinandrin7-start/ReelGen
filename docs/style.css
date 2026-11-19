@@ -202,3 +202,25 @@ dialog.nn { width: min(1120px, 96vw); max-height: 94vh; overflow-y: auto; paddin
   .n-name { font-size: 12px; }
   .n-status { display: none; }
 }
+
+/* Screening room: video player */
+.frame .play { position: absolute; inset: 0; margin: auto; width: 48px; height: 48px; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; color: #0b0b0c; background: var(--gold); border: 0;
+  box-shadow: 0 0 0 6px rgba(0,0,0,.45); opacity: .92; transition: transform .15s, opacity .15s; }
+.frame .play svg { margin-left: 3px; }
+.frame.playable { cursor: pointer; }
+.frame.playable:hover .play, .frame .play:focus-visible { opacity: 1; transform: scale(1.08); background: var(--gold); }
+.acts button svg { vertical-align: -2px; margin-right: 5px; }
+dialog.screen { width: min(460px, 94vw); max-height: 96vh; padding: 14px 16px 16px; overflow-y: auto; }
+.sc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.sc-head h2 { font: 500 15px/1.3 Inter, sans-serif; letter-spacing: 0; text-transform: none; margin: 4px 0 0; }
+.sc-kicker { display: flex; align-items: center; gap: 8px; font: 500 12px/1 var(--head); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--gold); }
+.sc-kicker .rec { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.sc-monitor { position: relative; aspect-ratio: 9/16; max-height: calc(96vh - 150px); margin: 0 auto; background: #000;
+  border: 1px solid var(--line2); border-radius: 6px; overflow: hidden; box-shadow: inset 0 0 0 4px #0b0b0c; }
+.sc-monitor iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.sc-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.sc-foot .hint { margin: 0; font-size: 12px; }
+.sc-foot .btn { white-space: nowrap; text-align: center; }
+@media (max-width: 520px) { .sc-foot { flex-direction: column; align-items: stretch; } }
