@@ -8,3 +8,4 @@ publisher/chrome-profile/
 publisher/downloads/
 publisher/screenshots/
 .venv/
+runs/*/preview.png

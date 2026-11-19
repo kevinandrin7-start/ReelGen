@@ -5,6 +5,8 @@
   python -m reelgen cleanup              # apply the Google Drive rules only
   python -m reelgen add "Topic" --notes "..."
   python -m reelgen demo                 # offline: render the RAG sample with a placeholder voice
+
+Scheduled Claude session mode (see ROUTINE.md): brief, start, validate, finish, fail.
 """
 from __future__ import annotations
 
@@ -136,6 +138,17 @@ def main(argv=None) -> int:
     p = sub.add_parser("cleanup"); p.set_defaults(fn=cmd_cleanup)
     p = sub.add_parser("add"); p.add_argument("title"); p.add_argument("--notes"); p.set_defaults(fn=cmd_add)
     p = sub.add_parser("demo"); p.set_defaults(fn=cmd_demo)
+    # scheduled Claude session mode (see ROUTINE.md)
+    from . import session as S
+    p = sub.add_parser("brief"); p.add_argument("step", choices=["research", "script", "plan"])
+    p.set_defaults(fn=lambda a: S.brief(a.step))
+    p = sub.add_parser("start"); p.add_argument("--topic"); p.set_defaults(fn=lambda a: S.start(a.topic))
+    p = sub.add_parser("validate"); p.add_argument("run_dir"); p.set_defaults(fn=lambda a: S.validate(a.run_dir))
+    p = sub.add_parser("preview"); p.add_argument("run_dir"); p.set_defaults(fn=lambda a: S.preview(a.run_dir))
+    p = sub.add_parser("finish"); p.add_argument("topic"); p.add_argument("--accept", action="store_true")
+    p.set_defaults(fn=lambda a: S.finish(a.topic, a.accept))
+    p = sub.add_parser("fail"); p.add_argument("topic"); p.add_argument("message")
+    p.set_defaults(fn=lambda a: S.fail(a.topic, a.message))
     args = ap.parse_args(argv)
     return args.fn(args)
 

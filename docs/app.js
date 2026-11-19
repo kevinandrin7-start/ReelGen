@@ -1,8 +1,7 @@
 // ReelGen backlog dashboard. Reads and writes backlog/topics.json through the GitHub API.
 (() => {
   const FILE = "backlog/topics.json";
-  const WORKFLOW = "produce.yml";
-  const $ = (s) => document.querySelector(s);
+    const $ = (s) => document.querySelector(s);
   const store = {
     get(k, d = "") { try { return localStorage.getItem("reelgen." + k) ?? d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem("reelgen." + k, v); } catch {} },
@@ -179,12 +178,6 @@
     });
   };
   $("#refresh").onclick = (e) => act(e.target, load);
-  $("#runNow").onclick = (e) => act(e.target, async () => {
-    if (!token) { $("#settings").showModal(); return; }
-    const r = await api(`/actions/workflows/${WORKFLOW}/dispatches`, { method: "POST", body: JSON.stringify({ ref: "main" }) });
-    if (!r.ok) throw new Error(`Could not start the pipeline (${r.status}). The token needs Actions: read and write.`);
-    banner("Pipeline started. The next topic will be ready in about 10 minutes.", true);
-  });
   $("#settingsBtn").onclick = () => { $("#repo").value = repo; $("#token").value = token; $("#settings").showModal(); };
   $("#settingsForm").onsubmit = (e) => {
     if (e.submitter?.value !== "save") return;

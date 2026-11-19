@@ -6,7 +6,7 @@ voice narration, then posts them to Instagram Reels and YouTube Shorts after you
 ```mermaid
 flowchart LR
   D[Dashboard<br/>GitHub Pages] -- add / approve --> B[(backlog/topics.json)]
-  subgraph GA[GitHub Actions, once a day]
+  subgraph GA[Scheduled Claude session, 8 AM daily, on your Claude plan]
     C{{Collaborator}} --> R[Researcher] --> C
     C --> S[Scripter] --> C
     C --> Di[Director] --> C
@@ -31,21 +31,31 @@ flowchart LR
 
 | Agent | What it does | Built with |
 |---|---|---|
-| Collaborator | Runs the steps in order, passes each output to the next agent, retries, saves every hand-off to `runs/<date>-<topic>/` | `reelgen/agents/collaborator.py` |
-| Researcher | Searches and reads the web, then returns sourced notes: definition, pain point, how it works, analogies, facts with URLs | Claude with Anthropic's web search and web fetch tools |
-| Scripter | Writes a 65 to 80 word, 5-line script (hook, problem, define, steps, payoff), a version prepared for text-to-speech, the Instagram caption and hashtags, and the YouTube title and description | Claude |
-| Director | Designs what's on screen for each scene by filling 5 fixed templates (words and icons), so every video keeps the channel's style | Claude + the Pillow renderer in `reelgen/render/` |
+| Collaborator | Runs the steps in order, passes each output to the next agent, retries, saves every hand-off to `runs/<date>-<topic>/` | The scheduled session following [ROUTINE.md](ROUTINE.md), with `python -m reelgen start / validate / preview / finish` |
+| Researcher | Searches and reads the web, then returns sourced notes: definition, pain point, how it works, analogies, facts with URLs | The scheduled Claude session (web search and fetch) |
+| Scripter | Writes a 65 to 80 word, 5-line script (hook, problem, define, steps, payoff), a version prepared for text-to-speech, the Instagram caption and hashtags, and the YouTube title and description | The scheduled Claude session |
+| Director | Designs what's on screen for each scene by filling 5 fixed templates (words and icons), previews the frames and fixes the layout, so every video keeps the channel's style | The scheduled Claude session + the Pillow renderer in `reelgen/render/` |
 | Sound engineer | Records one narration clip per scene with Google Cloud Text-to-Speech (Chirp 3 HD "Charon"), applying `config/pronunciations.json` | Google TTS REST API |
 | Editor | Fits each scene's length to its line (speeds the voice up to 1.15x if needed, exactly 30 s total), renders the video, mixes the voice at -14 LUFS | ffmpeg |
 | Tester | Checks size, frame rate, length, loudness, then transcribes the video with Google Speech-to-Text and compares it word by word with the script: overall and per-scene word error rate, words it heard differently (likely mispronounced), words per minute, long pauses, lines spilling into the next scene | Google Speech-to-Text REST API |
 | Publisher | On your laptop, downloads approved videos from Drive and posts them through a dedicated Chrome profile signed in to the channel accounts | Playwright with installed Chrome |
 
+### How the daily run works
+A Claude Code scheduled task starts a fresh session every morning on your Claude plan (no API
+bill). The session follows [ROUTINE.md](ROUTINE.md): `start` takes the next topic, the session
+writes `research.json`, `script.json` and `scene_plan.json` itself (`brief` prints each agent's
+instructions and schema), `validate` and `preview` check them, and `finish` records the voice,
+renders, tests, uploads to Drive and marks the topic ready.
+
+An API mode also exists (`python -m reelgen produce`, using `ANTHROPIC_API_KEY`) if you ever want
+to run the same agents without a session; it isn't scheduled.
+
 ### Retries
-- Script too long to fit 30 seconds: the scripter rewrites it (up to 3 tries).
-- Tester hears words wrong: Claude suggests respellings (e.g. "Kubernetes" as "koo-ber-net-eez"), the
-  sound engineer re-records only those scenes, and the editor re-mixes (up to 2 tries). Fixes are
-  saved in `runs/.../pronunciation_fixes.json` so you can add good ones to `config/pronunciations.json`.
-- Anything else fails: the topic goes back to the queue and is retried once on the next run, then
+- Script too long to fit 30 seconds: the scripter shortens it and tries again.
+- Tester hears words wrong: the session writes respellings (e.g. "Kubernetes" as "koo-ber-net-eez")
+  to `runs/.../respellings.json` and re-records (up to 2 tries). Good ones can be added to
+  `config/pronunciations.json`.
+- Anything else fails: the topic goes back to the queue and is retried once the next day, then
   marked failed with the error shown on the dashboard.
 - A video that still fails a check is uploaded anyway but marked "Needs your review", with the
   failed checks listed, so you decide.
@@ -68,8 +78,8 @@ Side exits: `failed` (after 2 attempts; Retry on the dashboard) and `rejected` (
 | Piece | Runs on | Cost |
 |---|---|---|
 | Dashboard | GitHub Pages | Free |
-| Pipeline | GitHub Actions (public repo) | Free minutes (one run a day) |
-| Claude (research, script, design) | Anthropic API | About $0.50 per video on Claude Opus 5.5 (about $15 a month at 1 a day). Set the `REELGEN_MODEL` repository variable to `claude-sonnet-5-5` to roughly halve it |
+| Pipeline (research, script, design, render, test) | A scheduled Claude Code session | Included in your Claude plan: one short session a day counts toward its usage limits |
+| Tests | GitHub Actions | Free |
 | Voice | Google Text-to-Speech | Free tier covers 1M Chirp 3 HD characters a month; one video is about 500 |
 | Narration check | Google Speech-to-Text | Free tier covers 60 minutes a month; 60 videos is 30 minutes |
 | Drive | Your Google account | Free |

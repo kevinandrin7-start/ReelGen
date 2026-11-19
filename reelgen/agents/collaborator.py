@@ -73,7 +73,7 @@ def produce(title: str, notes: str = "", hooks: Hooks = Hooks()) -> Result:
     _save(rd / "research.json", research)
     _save(rd / "research_notes.md", notes_md)
 
-    # 2-3. Scripter -> Director, 4. Sound engineer, 5. Editor (with a re-write if it runs long)
+    # 2-3. Scripter -> Director, then 4-6 (with a re-write if the script runs long)
     feedback = None
     for attempt in range(3):
         log.info("scripter (attempt %d)", attempt + 1)
@@ -82,13 +82,9 @@ def produce(title: str, notes: str = "", hooks: Hooks = Hooks()) -> Result:
         log.info("director")
         plan = (hooks.direct or director.run)(script, research)
         _save(rd / "scene_plan.json", plan)
-        log.info("sound engineer")
-        clips = sound_engineer.run(script, work / "voice", lex, synth=hooks.synth)
-        scenes = [l.scene for l in script.lines]
         try:
-            log.info("editor")
-            out = work / "final.mp4"
-            timing = editor.run(plan, clips, scenes, work / "edit", out)
+            out, report = make_video(rd, work, script, plan, lex, synth=hooks.synth,
+                                     transcribe=hooks.transcribe, respell=hooks.respell or _respell)
             break
         except editor.TooLong as e:
             feedback = (f"The narration is too long: {e}. It has {script.word_count()} words. "
@@ -96,35 +92,47 @@ def produce(title: str, notes: str = "", hooks: Hooks = Hooks()) -> Result:
             log.warning(feedback)
     else:
         raise RuntimeError("script still too long after 3 attempts")
+    return Result(rd, out, script, report, [str(p.relative_to(config.ROOT)) for p in rd.iterdir()])
 
-    # 6. Tester, with up to MAX_VOICE_RETRIES re-recordings of lines it heard wrong
+
+def make_video(rd: Path, work: Path, script: Script, plan: ScenePlan, lex: dict, synth=None,
+               transcribe=None, respell=None, max_retries: Optional[int] = None):
+    """Sound engineer -> Editor -> Tester (re-recording misheard lines). Raises editor.TooLong.
+    Returns (video path, test report) and writes test_report, thumbnail and caption to rd."""
+    scenes = [l.scene for l in script.lines]
+    log.info("sound engineer")
+    clips = sound_engineer.run(script, work / "voice", lex, synth=synth)
+    log.info("editor")
+    out = work / "final.mp4"
+    timing = editor.run(plan, clips, scenes, work / "edit", out)
+
     run_lex = dict(lex)
-    for attempt in range(config.MAX_VOICE_RETRIES + 1):
+    retries = config.MAX_VOICE_RETRIES if max_retries is None else max_retries
+    for attempt in range(retries + 1):
         log.info("tester (attempt %d)", attempt + 1)
-        report = tester.run(out, script, timing, run_lex, transcribe=hooks.transcribe)
+        report = tester.run(out, script, timing, run_lex, transcribe=transcribe)
         _save(rd / "test_report.json", report)
-        if report.passed or attempt == config.MAX_VOICE_RETRIES:
+        if report.passed or attempt == retries or respell is None:
             break
         bad = tester.failed_scene_indexes(report)
         if not bad or not report.misheard_words:
             break  # not a pronunciation problem; re-recording won't help
-        fixes = (hooks.respell or _respell)(report.misheard_words, script)
+        fixes = respell(report.misheard_words, script)
         if not fixes:
             break
         run_lex.update(fixes)
         log.info("re-recording scenes %s with respellings %s", bad, fixes)
-        clips = sound_engineer.run(script, work / "voice", run_lex, synth=hooks.synth, only=bad, previous=clips)
+        clips = sound_engineer.run(script, work / "voice", run_lex, synth=synth, only=bad, previous=clips)
         timing = editor.run(plan, clips, scenes, work / "edit", out)
 
-    # thumbnail for the dashboard
-    thumb = rd / "thumbnail.jpg"
+    # thumbnail for the dashboard, caption for the publisher
     t_mid = timing.starts[2] + timing.durations[2] * 0.8
-    video.frame(plan, timing.durations, t_mid).convert("RGB").resize((360, 640)).save(thumb, quality=82)
+    video.frame(plan, timing.durations, t_mid).convert("RGB").resize((360, 640)).save(rd / "thumbnail.jpg", quality=82)
     (rd / "caption.txt").write_text(scripter.full_caption(script) + "\n")
     if run_lex != lex:
         (rd / "pronunciation_fixes.json").write_text(json.dumps(
             {k: v for k, v in run_lex.items() if lex.get(k) != v}, indent=2))
-    return Result(rd, out, script, report, [str(p.relative_to(config.ROOT)) for p in rd.iterdir()])
+    return out, report
 
 
 def _respell(words: List[str], script: Script) -> dict:

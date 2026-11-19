@@ -108,3 +108,21 @@ def test_tester_speech_checks_with_fake_transcript(tmp_path):
     assert report.wer == 0
     assert by["narration matches script"].passed
     assert by["each scene's line is right"].passed
+
+
+def test_session_validate_and_length_warnings(tmp_path, monkeypatch, capsys):
+    import shutil
+    from reelgen import session
+    from reelgen.models import ScenePlan
+    rd = tmp_path / "runs" / "x"
+    rd.mkdir(parents=True)
+    for src, dst in [("rag_research.json", "research.json"), ("rag_script.json", "script.json"),
+                     ("rag_plan.json", "scene_plan.json")]:
+        shutil.copy(FX / src, rd / dst)
+    monkeypatch.setattr(config, "ROOT", tmp_path)
+    assert session.validate("runs/x") == 0
+    plan = ScenePlan.model_validate_json((FX / "rag_plan.json").read_text())
+    plan.hook.line1 = "A very long first line of the hook question"
+    assert any("hook.line1" in w for w in session._plan_length_warnings(plan))
+    (rd / "script.json").write_text('{"title": "x"}')
+    assert session.validate("runs/x") == 1

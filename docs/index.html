@@ -10,7 +10,6 @@
 <header class="top">
   <div class="brand"><span class="dot"></span>ReelGen</div>
   <div class="top-actions">
-    <button id="runNow" class="ghost" title="Start the pipeline on GitHub now">Run now</button>
     <button id="refresh" class="ghost">Refresh</button>
     <button id="settingsBtn" class="ghost">Settings</button>
   </div>
@@ -25,7 +24,7 @@
       <input id="title" placeholder="e.g. Vector databases" required maxlength="120">
       <textarea id="notes" rows="2" placeholder="Optional notes for the researcher (angle, audience, sources to use)"></textarea>
       <div class="row"><button type="submit" class="primary">Add to backlog</button>
-        <span class="hint">One topic is made per day, top of the queue first.</span></div>
+        <span class="hint">One topic is made each morning, top of the queue first.</span></div>
     </form>
   </section>
 
@@ -62,8 +61,8 @@
     <label>GitHub token
       <input id="token" type="password" placeholder="github_pat_...">
     </label>
-    <p class="hint">A fine-grained token for this repository only, with <b>Contents: read and write</b> and
-      <b>Actions: read and write</b>. It is saved only in this browser.</p>
+    <p class="hint">A fine-grained token for this repository only, with <b>Contents: read and write</b>.
+      It is saved only in this browser.</p>
     <div class="row"><button class="primary" value="save">Save</button><button value="cancel" class="ghost">Cancel</button></div>
   </form>
 </dialog>

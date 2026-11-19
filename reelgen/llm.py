@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 from typing import Optional, Type, TypeVar
 
-import anthropic
 from pydantic import BaseModel
 
 from . import config
@@ -12,13 +11,14 @@ from . import config
 log = logging.getLogger(__name__)
 T = TypeVar("T", bound=BaseModel)
 
-_client: Optional[anthropic.Anthropic] = None
+_client = None  # anthropic.Anthropic, created on first use
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 
-def client() -> anthropic.Anthropic:
+def client():
     global _client
     if _client is None:
+        import anthropic  # only needed in API mode
         _client = anthropic.Anthropic(max_retries=4, timeout=600)
     return _client
 
