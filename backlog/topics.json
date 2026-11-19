@@ -204,6 +204,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_ec471d9bdf",
+      "title": "Multimodal RAG (images and tables)",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127764.43,
+      "created_at": "2026-11-19T22:36:04Z",
+      "updated_at": "2026-11-19T22:36:04Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
