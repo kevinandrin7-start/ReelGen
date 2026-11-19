@@ -44,7 +44,7 @@ free monthly minutes (about 3 minutes per video) and Pages needs a paid plan.
 
 ## 4. First video
 1. Add a topic on the dashboard.
-2. Click **Run now** (or wait for the schedule: 13:00 and 21:00 UTC).
+2. Click **Run now** (or wait for the daily run at 13:00 UTC, 8 AM New York time).
 3. About 10 minutes later the video shows under **Waiting for your approval** with a Drive link,
    the caption and the test results. If a run fails, the error appears on the topic, and the full
    log is under the repo's **Actions** tab.

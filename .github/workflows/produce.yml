@@ -2,9 +2,9 @@ name: Produce videos
 
 on:
   schedule:
-    # Twice a day (times are UTC). Each run makes one video from the top of the queue.
+    # Once a day at 13:00 UTC (8 AM New York in winter, 9 AM in summer).
+    # Each run makes one video from the top of the queue.
     - cron: "0 13 * * *"
-    - cron: "0 21 * * *"
   workflow_dispatch:
     inputs:
       topic:

@@ -33,7 +33,7 @@ MAX_WEB_SEARCHES = int(_env("REELGEN_MAX_WEB_SEARCHES", "6"))
 MAX_WEB_FETCHES = int(_env("REELGEN_MAX_WEB_FETCHES", "4"))
 
 # --- Production schedule ---------------------------------------------------
-TOPICS_PER_RUN = int(_env("REELGEN_TOPICS_PER_RUN", "1"))  # workflow runs twice a day
+TOPICS_PER_RUN = int(_env("REELGEN_TOPICS_PER_RUN", "1"))  # the workflow runs once a day
 MAX_ATTEMPTS = int(_env("REELGEN_MAX_ATTEMPTS", "2"))
 
 # --- Video -----------------------------------------------------------------

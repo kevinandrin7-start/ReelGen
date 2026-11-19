@@ -6,7 +6,7 @@ voice narration, then posts them to Instagram Reels and YouTube Shorts after you
 ```mermaid
 flowchart LR
   D[Dashboard<br/>GitHub Pages] -- add / approve --> B[(backlog/topics.json)]
-  subgraph GA[GitHub Actions, twice a day]
+  subgraph GA[GitHub Actions, once a day]
     C{{Collaborator}} --> R[Researcher] --> C
     C --> S[Scripter] --> C
     C --> Di[Director] --> C
@@ -68,8 +68,8 @@ Side exits: `failed` (after 2 attempts; Retry on the dashboard) and `rejected` (
 | Piece | Runs on | Cost |
 |---|---|---|
 | Dashboard | GitHub Pages | Free |
-| Pipeline | GitHub Actions (public repo) | Free minutes |
-| Claude (research, script, design) | Anthropic API | About $0.50 per video on Claude Opus 5.5 (about $30 a month at 2 a day). Set the `REELGEN_MODEL` repository variable to `claude-sonnet-5-5` to roughly halve it |
+| Pipeline | GitHub Actions (public repo) | Free minutes (one run a day) |
+| Claude (research, script, design) | Anthropic API | About $0.50 per video on Claude Opus 5.5 (about $15 a month at 1 a day). Set the `REELGEN_MODEL` repository variable to `claude-sonnet-5-5` to roughly halve it |
 | Voice | Google Text-to-Speech | Free tier covers 1M Chirp 3 HD characters a month; one video is about 500 |
 | Narration check | Google Speech-to-Text | Free tier covers 60 minutes a month; 60 videos is 30 minutes |
 | Drive | Your Google account | Free |
