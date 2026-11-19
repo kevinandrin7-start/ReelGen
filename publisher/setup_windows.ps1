@@ -8,11 +8,36 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $here
 
 if (-not (Test-Path ".venv")) {
-  # Works with the python.org launcher (py) or Anaconda's python
-  if (Get-Command py -ErrorAction SilentlyContinue) { py -3 -m venv .venv } else { python -m venv .venv }
+  # Use the newest Python 3.10+ from the py launcher if there is one, else whatever "python" is (e.g. Anaconda)
+  $made = $false
+  if (Get-Command py -ErrorAction SilentlyContinue) {
+    foreach ($v in "3.13", "3.12", "3.11", "3.10") {
+      py -$v -c "pass" 2>$null
+      if ($LASTEXITCODE -eq 0) { py -$v -m venv .venv; $made = $true; break }
+    }
+  }
+  if (-not $made) {
+    if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
+      Write-Host "Python was not found. Install Python 3.12 from https://www.python.org/downloads/ and run this again." -ForegroundColor Red
+      exit 1
+    }
+    python -m venv .venv
+  }
 }
+& .\.venv\Scripts\python.exe -c "import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)"
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "This needs Python 3.9 or newer. Delete the .venv folder, install Python 3.12 from python.org, and run this again." -ForegroundColor Red
+  exit 1
+}
+$ErrorActionPreference = "Continue"
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
-& .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+# Prebuilt packages only: never compile (that needs Visual Studio). pip picks the newest version with a wheel.
+& .\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements.txt
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "Installing the Python packages failed (see above)." -ForegroundColor Red
+  exit 1
+}
+$ErrorActionPreference = "Stop"
 
 if (-not (Test-Path ".env")) {
   Copy-Item ".env.example" ".env"
