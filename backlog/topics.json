@@ -84,6 +84,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_8a94f1602a",
+      "title": "Hybrid search (BM25 + vectors)",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127696.749,
+      "created_at": "2026-11-19T22:34:56Z",
+      "updated_at": "2026-11-19T22:34:56Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
