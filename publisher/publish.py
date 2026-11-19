@@ -40,8 +40,8 @@ import sites  # noqa: E402
 
 log = logging.getLogger("publisher")
 # The only accounts the publisher may post from. It checks them before every upload.
-YOUTUBE_HANDLE = "@" + os.environ.get("YOUTUBE_HANDLE", "@BrainBytesDaily-q9h").strip().lstrip("@")
-INSTAGRAM_HANDLE = os.environ.get("INSTAGRAM_HANDLE", "").strip()
+YOUTUBE_HANDLE = "@" + (os.environ.get("YOUTUBE_HANDLE") or "BrainBytesDaily-q9h").strip().lstrip("@")
+INSTAGRAM_HANDLE = (os.environ.get("INSTAGRAM_HANDLE") or "brain.bytesdaily").strip().lstrip("@")
 PROFILE = Path(os.environ.get("REELGEN_CHROME_PROFILE", HERE / "chrome-profile"))
 DOWNLOADS = HERE / "downloads"
 

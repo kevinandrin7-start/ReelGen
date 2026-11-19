@@ -76,9 +76,8 @@ You need Python 3.12, Git and Google Chrome.
    This opens a separate Chrome profile just for ReelGen. Sign in to Instagram and YouTube there,
    then press Enter in the terminal.
    The publisher only posts from the accounts named in `publisher\.env`: `YOUTUBE_HANDLE`
-   (`@BrainBytesDaily-q9h`) and `INSTAGRAM_HANDLE`. Before every upload it checks which channel Chrome
-   is signed in to, and if it's a different one it stops without posting. While `INSTAGRAM_HANDLE` is
-   empty, videos go to YouTube only.
+   (`@BrainBytesDaily-q9h`) and `INSTAGRAM_HANDLE` (`brain.bytesdaily`). Before every upload it checks
+   which account Chrome is signed in to, and if it's a different one it stops without posting.
 4. Approve a video on the dashboard, then test without publishing:
    ```
    .\.venv\Scripts\python.exe publish.py run --dry-run --max 1
