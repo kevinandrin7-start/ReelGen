@@ -7,6 +7,8 @@ $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $here
 
+# Native commands write progress to stderr; in Windows PowerShell 5.1 "Stop" turns that into an error
+$ErrorActionPreference = "Continue"
 if (-not (Test-Path ".venv")) {
   # Use the newest Python 3.10+ from the py launcher if there is one, else whatever "python" is (e.g. Anaconda)
   $made = $false
@@ -29,7 +31,6 @@ if ($LASTEXITCODE -ne 0) {
   Write-Host "This needs Python 3.9 or newer. Delete the .venv folder, install Python 3.12 from python.org, and run this again." -ForegroundColor Red
   exit 1
 }
-$ErrorActionPreference = "Continue"
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
 # Prebuilt packages only: never compile (that needs Visual Studio). pip picks the newest version with a wheel.
 & .\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements.txt
