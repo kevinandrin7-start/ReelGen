@@ -245,13 +245,23 @@
       "id": "t_0ae41a8a42",
       "title": "What is AI?",
       "notes": "End-to-end test topic. Beginner angle: what AI is, how it learns from data, everyday examples.",
-      "status": "queued",
+      "status": "in_progress",
       "order": 1795127645.739,
       "created_at": "2026-11-19T22:37:32Z",
-      "updated_at": "2026-11-19T22:37:32Z",
-      "attempts": 0,
+      "updated_at": "2026-11-19T22:37:42Z",
+      "attempts": 1,
       "error": null,
-      "posted": {}
+      "posted": {},
+      "started_at": "2026-11-19T22:37:42Z",
+      "run_dir": "runs/2026-11-19-what-is-ai"
     }
-  ]
+  ],
+  "agents": {
+    "collaborator": {
+      "task": "Picked the next topic from the queue and started the run.",
+      "ok": true,
+      "topic": "What is AI?",
+      "at": "2026-11-19T22:37:42Z"
+    }
+  }
 }
