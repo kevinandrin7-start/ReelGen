@@ -175,6 +175,12 @@ def finish(topic_id: str, accept: bool = False) -> int:
 
     name = f"{date.today().isoformat()} {topic['title']}.mp4"
     up = drive.upload(out, name, description=scripter.full_caption(script))
+    old = topic.get("drive_file_id")
+    if old and old != up["id"]:  # re-made: the new cut replaces the old one on Drive
+        try:
+            drive.delete(old)
+        except Exception as e:  # not fatal; the Drive keeper can clean it up later
+            print(f"could not delete the old Drive file: {e}", file=sys.stderr)
 
     from . import audio
     seconds = audio.duration(out)

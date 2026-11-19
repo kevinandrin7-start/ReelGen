@@ -48,6 +48,8 @@ TTS_LANGUAGE = _env("REELGEN_TTS_LANGUAGE", "en-US")
 TTS_SAMPLE_RATE = 24000
 VOICE_SPEED = float(_env("REELGEN_VOICE_SPEED", "1.06"))  # atempo; editor may raise to 1.15 to fit
 VOICE_MAX_SPEED = 1.15
+VOICE_MIN_SPEED = 0.85  # the editor may slow a rushed line down to this
+MAX_LINE_WPM = 195.0  # top pace for any one line (the tester allows up to 205)
 VOICE_LEAD_IN = 0.2  # seconds of silence before each scene's line
 
 # --- Tester thresholds -----------------------------------------------------

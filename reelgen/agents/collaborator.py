@@ -100,11 +100,12 @@ def make_video(rd: Path, work: Path, script: Script, plan: ScenePlan, lex: dict,
     """Sound engineer -> Editor -> Tester (re-recording misheard lines). Raises editor.TooLong.
     Returns (video path, test report) and writes test_report, thumbnail and caption to rd."""
     scenes = [l.scene for l in script.lines]
+    words = [len(l.spoken.split()) for l in script.lines]
     log.info("sound engineer")
     clips = sound_engineer.run(script, work / "voice", lex, synth=synth)
     log.info("editor")
     out = work / "final.mp4"
-    timing = editor.run(plan, clips, scenes, work / "edit", out)
+    timing = editor.run(plan, clips, scenes, work / "edit", out, words=words)
 
     run_lex = dict(lex)
     retries = config.MAX_VOICE_RETRIES if max_retries is None else max_retries
@@ -123,7 +124,7 @@ def make_video(rd: Path, work: Path, script: Script, plan: ScenePlan, lex: dict,
         run_lex.update(fixes)
         log.info("re-recording scenes %s with respellings %s", bad, fixes)
         clips = sound_engineer.run(script, work / "voice", run_lex, synth=synth, only=bad, previous=clips)
-        timing = editor.run(plan, clips, scenes, work / "edit", out)
+        timing = editor.run(plan, clips, scenes, work / "edit", out, words=words)
 
     # thumbnail for the dashboard, caption for the publisher
     t_mid = timing.starts[2] + timing.durations[2] * 0.8

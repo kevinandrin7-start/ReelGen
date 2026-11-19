@@ -111,7 +111,11 @@
     for (const t of ready) {
       const n = $("#readyTpl").content.cloneNode(true);
       const img = n.querySelector(".thumb");
-      if (t.thumbnail) img.src = `https://raw.githubusercontent.com/${repo}/main/${t.thumbnail}`; else img.closest(".frame").remove();
+      if (t.thumbnail) img.src = `https://raw.githubusercontent.com/${repo}/main/${t.thumbnail}`; else img.remove();
+      const play = n.querySelector(".play");
+      if (onDrive(t)) { play.innerHTML = ReelGenCrew.icon("play", 22); const f = n.querySelector(".frame"); f.classList.add("playable"); f.onclick = () => screen(t); }
+      else play.remove();
+      if (!t.thumbnail && !onDrive(t)) n.querySelector(".frame").remove();
       n.querySelector(".status").innerHTML = `<span class="pill ${t.test_passed ? "ok" : "warn"}">${t.test_passed ? "QC passed" : "QC flagged"}</span> <span class="hint">${esc(t.title)} · ${ago(t.finished_at)}</span>`;
       n.querySelector(".ytitle").textContent = t.youtube_title || t.title;
       n.querySelector(".caption").textContent = t.caption || "";
@@ -167,19 +171,37 @@
       }
     };
     const label = { in_progress: "Rendering", approved: "Approved, waiting for the publisher", posting: "Publishing" };
-    simple($("#active"), active, (t) => `<span class="pill">${label[t.status]}</span> ${ago(t.updated_at)}`, null,
+    simple($("#active"), active, (t) => `<span class="pill">${label[t.status]}</span> ${ago(t.updated_at)}`, playBtn,
       "clapper", "Nothing in production. Next run at 7:47 AM.");
     simple($("#posted"), posted, (t) => {
       const p = t.posted || {};
       const link = (k, n) => p[k + "_url"] ? `<a href="${esc(p[k + "_url"])}" target="_blank" rel="noopener">${n}</a>` : (p[k] ? n : `<s>${n}</s>`);
       return `${link("instagram", "Instagram")} · ${link("youtube", "YouTube")} · ${ago(t.updated_at)}${t.drive_deleted_at ? " · removed from Drive" : ""}`;
-    }, null, "broadcast", "Nothing released yet.");
+    }, playBtn, "broadcast", "Nothing released yet.");
     simple($("#failed"), failed, (t) => `<span class="pill ${t.status === "failed" ? "bad" : ""}">${t.status}</span> ${esc((t.error || "").slice(0, 160))}`,
       (t, acts) => {
         const b = document.createElement("button"); b.className = "ghost"; b.textContent = "Retry";
         b.onclick = () => act(b, () => change((d) => set(find(d, t.id), { status: "queued", attempts: 0, error: null }), `Retry: ${t.title}`));
         acts.appendChild(b);
       }, "trash", "Nothing on the cutting room floor.");
+  }
+
+  // The screening room: plays a video straight from Google Drive.
+  const onDrive = (t) => !!(t.drive_file_id && !t.drive_deleted_at);
+  function screen(t) {
+    const id = encodeURIComponent(t.drive_file_id);
+    $("#scTitle").textContent = t.youtube_title || t.title;
+    $("#scPlayer").src = `https://drive.google.com/file/d/${id}/preview`;
+    $("#scDrive").href = t.drive_link || `https://drive.google.com/file/d/${id}/view`;
+    $("#screen").showModal();
+  }
+  $("#screen").addEventListener("close", () => { $("#scPlayer").src = "about:blank"; });
+  function playBtn(t, acts) {
+    if (!onDrive(t)) return;
+    const b = document.createElement("button");
+    b.className = "ghost"; b.innerHTML = `${ReelGenCrew.icon("play", 14)}Play`;
+    b.onclick = () => screen(t);
+    acts.appendChild(b);
   }
 
   function newTopic(title, notes) {

@@ -7,7 +7,10 @@ $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $here
 
-if (-not (Test-Path ".venv")) { py -3 -m venv .venv }
+if (-not (Test-Path ".venv")) {
+  # Works with the python.org launcher (py) or Anaconda's python
+  if (Get-Command py -ErrorAction SilentlyContinue) { py -3 -m venv .venv } else { python -m venv .venv }
+}
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
 & .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
