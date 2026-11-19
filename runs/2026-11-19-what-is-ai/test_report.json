@@ -23,8 +23,8 @@
     },
     {
       "name": "loudness",
-      "passed": false,
-      "detail": "-16.2 LUFS (target -14.0)"
+      "passed": true,
+      "detail": "-15.2 LUFS (target -14.0)"
     },
     {
       "name": "true peak",
@@ -44,7 +44,7 @@
     {
       "name": "pacing",
       "passed": false,
-      "detail": "hook 318 wpm; problem 233 wpm"
+      "detail": "define runs past its scene"
     },
     {
       "name": "no awkward pauses",
@@ -57,7 +57,7 @@
   "scene_wer": [
     0.0,
     0.0,
-    0.0,
+    0.1,
     0.029,
     0.0
   ],

@@ -245,23 +245,23 @@
       "id": "t_0ae41a8a42",
       "title": "What is AI?",
       "notes": "End-to-end test topic. Beginner angle: what AI is, how it learns from data, everyday examples.",
-      "status": "approved",
+      "status": "ready",
       "order": 1795127645.739,
       "created_at": "2026-11-19T22:37:32Z",
-      "updated_at": "2026-11-19T22:41:40Z",
+      "updated_at": "2026-11-19T23:13:00Z",
       "attempts": 1,
       "error": null,
       "posted": {},
       "started_at": "2026-11-19T22:37:42Z",
       "run_dir": "runs/2026-11-19-what-is-ai",
-      "finished_at": "2026-11-19T22:40:29Z",
-      "drive_file_id": "1VOR_jrdVQdlEPvALWa1rMxIOaVg5pm3c",
-      "drive_link": "https://drive.google.com/file/d/1VOR_jrdVQdlEPvALWa1rMxIOaVg5pm3c/view?usp=drivesdk",
+      "finished_at": "2026-11-19T23:13:00Z",
+      "drive_file_id": "10cLiHQ-3yss2dC7ydUmqvbRl9tJFdFuB",
+      "drive_link": "https://drive.google.com/file/d/10cLiHQ-3yss2dC7ydUmqvbRl9tJFdFuB/view?usp=drivesdk",
       "caption": "How does your phone guess your next word? It isn't following a giant rulebook. AI learns patterns from millions of examples, then uses them to predict new things. What's the most useful AI you use every day?\n\n#AI #ArtificialIntelligence #MachineLearning #TechExplained #LearnAI #Shorts",
       "youtube_title": "What is AI? Explained in 30 seconds #Shorts",
       "youtube_description": "AI lets computers mimic human thinking skills. Instead of following hand-written rules, it learns patterns from huge amounts of example data, then uses them to make predictions, like your phone suggesting your next word.",
       "test_passed": false,
-      "test_summary": "Failed: loudness: -16.2 LUFS (target -14.0) | pacing: hook 318 wpm; problem 233 wpm",
+      "test_summary": "Failed: pacing: define runs past its scene",
       "thumbnail": "runs/2026-11-19-what-is-ai/thumbnail.jpg",
       "approved_at": "2026-11-19T22:41:40Z"
     }
@@ -271,49 +271,49 @@
       "task": "Finished the run and sent the video for approval.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "researcher": {
       "task": "Researched the topic from 6 sources, with 6 key facts and 2 analogies.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "scripter": {
       "task": "Wrote a 79-word, 5-line script and the captions.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "director": {
       "task": "Planned the 5 scenes: hook, problem, definition, steps and payoff.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "sound_engineer": {
       "task": "Recorded the narration (5 lines).",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "editor": {
       "task": "Rendered and mixed a 30.0-second 1080x1920 video.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "tester": {
-      "task": "Failed: loudness: -16.2 LUFS (target -14.0) | pacing: hook 318 wpm; problem 233 wpm. Word error rate 1%.",
+      "task": "Failed: pacing: define runs past its scene. Word error rate 1%.",
       "ok": false,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     },
     "drive": {
       "task": "Stored the video, waiting for your approval.",
       "ok": true,
       "topic": "What is AI?",
-      "at": "2026-11-19T22:40:29Z"
+      "at": "2026-11-19T23:13:00Z"
     }
   }
 }
