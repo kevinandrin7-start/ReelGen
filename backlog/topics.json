@@ -192,6 +192,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_1c8c747e47",
+      "title": "GraphRAG",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127759.335,
+      "created_at": "2026-11-19T22:35:59Z",
+      "updated_at": "2026-11-19T22:35:59Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
