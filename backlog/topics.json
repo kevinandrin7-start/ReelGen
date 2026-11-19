@@ -60,6 +60,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_c7ec5ad473",
+      "title": "Chunking: splitting documents the right way",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127685.842,
+      "created_at": "2026-11-19T22:34:45Z",
+      "updated_at": "2026-11-19T22:34:45Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
