@@ -1,0 +1,19 @@
+{
+  "hook": {"line1": "Why does AI", "line2": "make things up?", "icon": "brain", "subline": "Here's the fix in 30 sec"},
+  "problem": {"headline": "LLMs answer from memory",
+    "pains": [{"text": "Training data is months old", "icon": "clock"},
+              {"text": "It can't see your documents", "icon": "lock"},
+              {"text": "So it confidently guesses", "icon": "robot"}],
+    "tags": ["OUTDATED", "MADE UP", "NO SOURCE"]},
+  "define": {"intro": "The fix:", "term": "RAG", "expansion": "Retrieval-Augmented Generation", "analogy": "Give the AI an open book"},
+  "steps": {"label": "How RAG works", "steps": [
+      {"title": "Ask a question", "sub": "“What's our refund policy?”", "icon": "chat"},
+      {"title": "Embed it", "sub": "Turn text into numbers", "icon": "numbers"},
+      {"title": "Search the vector DB", "sub": "Find text with similar meaning", "icon": "database"},
+      {"title": "Retrieve top chunks", "sub": "Grab the most relevant docs", "icon": "docs"},
+      {"title": "Generate the answer", "sub": "LLM + your docs = facts", "icon": "check"}],
+    "result": "“30 days. Source: Policy.pdf”"},
+  "payoff": {"line1": "RAG =", "highlight": "an open-book exam", "line3": "for AI",
+    "bad": {"title": "Closed book", "sub": "Guesses from memory"},
+    "good": {"title": "Open book (RAG)", "sub": "Looks it up, cites sources"}}
+}

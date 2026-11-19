@@ -1,0 +1,14 @@
+{
+  "title": "RAG explained",
+  "lines": [
+    {"scene": "hook", "narration": "Why does AI make things up?", "spoken": "Why does A I make things up?"},
+    {"scene": "problem", "narration": "Because it answers from memory, and that memory is months old. So it guesses.", "spoken": "Because it answers from memory, and that memory is months old. So it guesses."},
+    {"scene": "define", "narration": "The fix is RAG. Retrieval-Augmented Generation.", "spoken": "The fix is rag. Retrieval-Augmented Generation."},
+    {"scene": "steps", "narration": "You ask a question. It's turned into numbers, called an embedding. Then it searches a database for text with similar meaning, grabs the most relevant documents, and the AI answers using them, with sources.", "spoken": "You ask a question. It's turned into numbers, called an embedding. Then it searches a database for text with similar meaning, grabs the most relevant documents, and the A I answers using them, with sources."},
+    {"scene": "payoff", "narration": "RAG is an open-book exam for AI. Follow for more!", "spoken": "Rag is an open-book exam for A I. Follow for more!"}
+  ],
+  "instagram_caption": "Why does AI sometimes make things up? Because it answers from memory. RAG lets it look things up first and cite its sources. Would you trust an AI more if it showed sources?",
+  "hashtags": ["#AI", "#RAG", "#MachineLearning", "#GenAI", "#TechExplained", "#LearnAI"],
+  "youtube_title": "RAG explained in 30 seconds #Shorts",
+  "youtube_description": "Retrieval-Augmented Generation (RAG) lets an AI look up real documents before answering, so it can cite sources instead of guessing."
+}
