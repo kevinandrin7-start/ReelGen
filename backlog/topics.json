@@ -1,4 +1,17 @@
 {
   "version": 1,
-  "topics": []
+  "topics": [
+    {
+      "id": "t_4e643ed5c4",
+      "title": "What is RAG?",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127646.739,
+      "created_at": "2026-11-19T22:34:06Z",
+      "updated_at": "2026-11-19T22:34:06Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
+    }
+  ]
 }
