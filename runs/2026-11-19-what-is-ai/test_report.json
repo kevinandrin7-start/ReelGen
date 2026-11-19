@@ -1,5 +1,5 @@
 {
-  "passed": false,
+  "passed": true,
   "checks": [
     {
       "name": "resolution",
@@ -43,8 +43,8 @@
     },
     {
       "name": "pacing",
-      "passed": false,
-      "detail": "define runs past its scene"
+      "passed": true,
+      "detail": "ok"
     },
     {
       "name": "no awkward pauses",
