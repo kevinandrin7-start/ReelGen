@@ -120,6 +120,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_9ccafead77",
+      "title": "Query rewriting",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127715.75,
+      "created_at": "2026-11-19T22:35:15Z",
+      "updated_at": "2026-11-19T22:35:15Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
