@@ -3,13 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ReelGen Backlog</title>
+<title>ReelGen Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top">
-  <div class="brand"><span class="dot"></span>ReelGen</div>
+  <div class="brand"><span class="logo" data-av="collaborator"></span>
+    <div><div class="brand-name">ReelGen</div><div class="brand-sub">AI in 30 seconds · studio</div></div></div>
   <div class="top-actions">
+    <button id="workflowBtn" class="primary pop">Show Workflow</button>
     <button id="refresh" class="ghost">Refresh</button>
     <button id="settingsBtn" class="ghost">Settings</button>
   </div>
@@ -18,38 +23,44 @@
 <main>
   <div id="banner" class="banner" hidden></div>
 
+  <section class="crew-strip" aria-label="The crew">
+    <div class="crew-faces" id="crewFaces"></div>
+    <div class="bubble crew-say" id="crewSay">Ohayo, Senpai! The crew is ready.</div>
+  </section>
+
   <section class="card add">
-    <h2>Add a topic</h2>
+    <div class="add-head"><span class="h-av big" data-av="researcher"></span>
+      <div><h2>Feed the crew a topic!</h2><p class="hint">Prof. Kumo researches the top of the queue every morning at 7:47 AM.</p></div></div>
     <form id="addForm">
       <input id="title" placeholder="e.g. Vector databases" required maxlength="120">
-      <textarea id="notes" rows="2" placeholder="Optional notes for the researcher (angle, audience, sources to use)"></textarea>
-      <div class="row"><button type="submit" class="primary">Add to backlog</button>
+      <textarea id="notes" rows="2" placeholder="Optional notes for Prof. Kumo (angle, audience, sources to use)"></textarea>
+      <div class="row"><button type="submit" class="primary">Add to backlog!</button>
         <span class="hint">One topic is made each morning, top of the queue first.</span></div>
     </form>
   </section>
 
   <section>
-    <h2>Waiting for your approval <span class="count" id="c-ready"></span></h2>
+    <h2 class="cap"><span class="h-av" data-av="you_approve"></span>Waiting for your approval <span class="count" id="c-ready"></span></h2>
     <div id="ready" class="grid"></div>
   </section>
 
   <section>
-    <h2>Queue <span class="count" id="c-queued"></span></h2>
+    <h2 class="cap"><span class="h-av" data-av="you_add"></span>Queue <span class="count" id="c-queued"></span></h2>
     <ol id="queued" class="list"></ol>
   </section>
 
   <section>
-    <h2>In progress and posting <span class="count" id="c-active"></span></h2>
+    <h2 class="cap"><span class="h-av" data-av="collaborator"></span>In progress and posting <span class="count" id="c-active"></span></h2>
     <ul id="active" class="list"></ul>
   </section>
 
   <section>
-    <h2>Posted <span class="count" id="c-posted"></span></h2>
+    <h2 class="cap"><span class="h-av" data-av="socials"></span>Posted <span class="count" id="c-posted"></span></h2>
     <ul id="posted" class="list"></ul>
   </section>
 
   <section>
-    <h2>Failed or rejected <span class="count" id="c-failed"></span></h2>
+    <h2 class="cap"><span class="h-av" data-av="tester"></span>Failed or rejected <span class="count" id="c-failed"></span></h2>
     <ul id="failed" class="list"></ul>
   </section>
 </main>
@@ -67,6 +78,26 @@
   </form>
 </dialog>
 
+<dialog id="workflow" class="nn" aria-labelledby="wfTitle">
+  <div class="wf-head">
+    <h2 id="wfTitle">The ReelGen neural crew</h2>
+    <form method="dialog"><button class="ghost" aria-label="Close">Close</button></form>
+  </div>
+  <div class="wf-now"><span id="wfNowAvatar"></span><div class="bubble dark" id="wfNowText"></div></div>
+  <div class="wf-legend">
+    <span style="--c:#ffd23f">You</span>
+    <span style="--c:#22d3ee">Daily Claude session, 7:47 AM</span>
+    <span style="--c:#60a5fa">Google Drive</span>
+    <span style="--c:#b9a5ff">Your laptop</span>
+    <span style="--c:#ff4d8d">Social accounts</span>
+  </div>
+  <div id="wf" class="wf"></div>
+  <p class="wf-hint">Hover over a crew member, or tap one, to see what they do and their last task.
+    Glowing pulses follow the hand-offs and numbers show the order. Yellow dashed links:
+    Detective Yuki sends mispronounced lines back to DJ Sora, and Grandpa Sweep cleans up Drive.</p>
+  <div id="wfTip" class="wf-tip" role="tooltip" hidden></div>
+</dialog>
+
 <template id="readyTpl">
   <article class="card video">
     <img class="thumb" alt="">
@@ -77,7 +108,7 @@
       <div class="tests"></div>
       <div class="row">
         <a class="watch ghost btn" target="_blank" rel="noopener">Watch on Drive</a>
-        <button class="approve primary">Approve</button>
+        <button class="approve primary">Approve!</button>
         <button class="remake ghost">Re-make</button>
         <button class="reject danger">Reject</button>
       </div>
@@ -85,6 +116,8 @@
   </article>
 </template>
 
+<script src="crew.js"></script>
+<script src="workflow.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

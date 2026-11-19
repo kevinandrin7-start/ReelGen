@@ -40,6 +40,7 @@
     sha = j.sha;
     data = JSON.parse(b64decode(j.content));
     render();
+    window.ReelGenWorkflow?.update(data);
   }
 
   // Apply a change to the freshest copy and save; retries if the pipeline saved in between.
@@ -75,7 +76,11 @@
     try { await fn(); } catch (e) { banner(e.message); } finally { btn && (btn.disabled = false); }
   }
 
+  const empty = (who, text) => `<div class="empty">${window.ReelGenCrew ? window.ReelGenCrew.avatar(who, 44, false) : ""}<div class="bubble">${text}</div></div>`;
+
   function render() {
+    const say = $("#crewSay");
+    if (say && window.ReelGenWorkflow) say.textContent = window.ReelGenWorkflow.summary(data);
     const by = (s) => data.topics.filter((t) => s.includes(t.status));
     const queued = by(["queued"]).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const ready = by(["ready"]);
@@ -87,7 +92,7 @@
 
     // waiting for approval
     const rw = $("#ready"); rw.innerHTML = "";
-    if (!ready.length) rw.innerHTML = '<div class="empty">Nothing waiting. New videos appear here when they are ready.</div>';
+    if (!ready.length) rw.innerHTML = empty("you_approve", "Nothing to approve yet. New videos pop up here when they're ready!");
     for (const t of ready) {
       const n = $("#readyTpl").content.cloneNode(true);
       const img = n.querySelector(".thumb");
@@ -113,7 +118,7 @@
 
     // queue
     const ql = $("#queued"); ql.innerHTML = "";
-    if (!queued.length) ql.innerHTML = '<div class="empty">The queue is empty. Add a topic above.</div>';
+    if (!queued.length) ql.innerHTML = empty("researcher", "The queue is empty... I'm hungry for topics! Add one above.");
     queued.forEach((t, i) => {
       const li = document.createElement("li");
       li.innerHTML = `<div><div class="t">${esc(t.title)}</div><div class="meta">${esc(t.notes || "")}${t.error ? ` <span class="pill warn">retrying: ${esc(t.error.slice(0, 80))}</span>` : ""}</div></div>
@@ -137,8 +142,8 @@
       ql.appendChild(li);
     });
 
-    const simple = (el, arr, meta, extra) => {
-      el.innerHTML = arr.length ? "" : '<div class="empty">None.</div>';
+    const simple = (el, arr, meta, extra, who = "drive", quiet = "Nothing here yet!") => {
+      el.innerHTML = arr.length ? "" : empty(who, quiet);
       for (const t of arr) {
         const li = document.createElement("li");
         li.innerHTML = `<div><div class="t">${esc(t.title)}</div><div class="meta">${meta(t)}</div></div><div class="acts"></div>`;
@@ -147,18 +152,19 @@
       }
     };
     const label = { in_progress: "Being made", approved: "Approved, waiting for the publisher", posting: "Posting" };
-    simple($("#active"), active, (t) => `<span class="pill">${label[t.status]}</span> ${ago(t.updated_at)}`);
+    simple($("#active"), active, (t) => `<span class="pill">${label[t.status]}</span> ${ago(t.updated_at)}`, null,
+      "collaborator", "All quiet. Next mission: 7:47 AM!");
     simple($("#posted"), posted, (t) => {
       const p = t.posted || {};
       const link = (k, n) => p[k + "_url"] ? `<a href="${esc(p[k + "_url"])}" target="_blank" rel="noopener">${n}</a>` : (p[k] ? n : `<s>${n}</s>`);
       return `${link("instagram", "Instagram")} · ${link("youtube", "YouTube")} · ${ago(t.updated_at)}${t.drive_deleted_at ? " · removed from Drive" : ""}`;
-    });
+    }, null, "socials", "No posts yet... we're waiting, Senpai!");
     simple($("#failed"), failed, (t) => `<span class="pill ${t.status === "failed" ? "bad" : ""}">${t.status}</span> ${esc((t.error || "").slice(0, 160))}`,
       (t, acts) => {
         const b = document.createElement("button"); b.className = "ghost"; b.textContent = "Retry";
         b.onclick = () => act(b, () => change((d) => set(find(d, t.id), { status: "queued", attempts: 0, error: null }), `Retry: ${t.title}`));
         acts.appendChild(b);
-      });
+      }, "tester", "No failures. Case closed!");
   }
 
   function newTopic(title, notes) {
@@ -177,6 +183,18 @@
       banner("Added to the queue.", true);
     });
   };
+  $("#workflowBtn").onclick = () => window.ReelGenWorkflow.open(data);
+  if (window.ReelGenCrew) {
+    document.querySelectorAll("[data-av]").forEach((el) => (el.innerHTML = window.ReelGenCrew.avatar(el.dataset.av, el.classList.contains("big") ? 64 : el.classList.contains("logo") ? 44 : 34)));
+    const faces = $("#crewFaces");
+    for (const id of ["collaborator", "researcher", "scripter", "director", "sound_engineer", "editor", "tester", "drive", "drive_keeper", "publisher", "socials"]) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "face"; b.title = `${window.ReelGenCrew.PERSONAS[id].name} (${window.ReelGenCrew.PERSONAS[id].role})`;
+      b.innerHTML = window.ReelGenCrew.avatar(id, 46);
+      b.onclick = () => window.ReelGenWorkflow.open(data);
+      faces.appendChild(b);
+    }
+  }
   $("#refresh").onclick = (e) => act(e.target, load);
   $("#settingsBtn").onclick = () => { $("#repo").value = repo; $("#token").value = token; $("#settings").showModal(); };
   $("#settingsForm").onsubmit = (e) => {

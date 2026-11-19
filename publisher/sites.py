@@ -61,11 +61,54 @@ def _type_into(page: Page, box: Locator, text: str) -> None:
 
 # ------------------------------------------------------------------ YouTube --
 
-def post_youtube(page: Page, video: Path, title: str, description: str, dry_run: bool) -> Optional[str]:
+CHANNEL_RE = re.compile(r"/channel/(UC[\w-]{22})")
+
+
+def youtube_channel_id(page: Page, handle: str) -> str:
+    """The channel ID (UC...) behind a handle such as @BrainBytesDaily-q9h."""
+    page.goto(f"https://www.youtube.com/{handle}", wait_until="domcontentloaded")
+    for sel in ('link[rel="canonical"]', 'meta[itemprop="url"]', 'meta[property="og:url"]'):
+        try:
+            loc = page.locator(sel).first
+            val = loc.get_attribute("href" if sel.startswith("link") else "content", timeout=10000) or ""
+        except Exception:
+            continue
+        m = CHANNEL_RE.search(val)
+        if m:
+            return m.group(1)
+    raise PostError(f"could not find the YouTube channel {handle}; check YOUTUBE_HANDLE in publisher/.env")
+
+
+def youtube_active_channel(page: Page) -> str:
+    """The channel ID that YouTube Studio opens for the signed-in account."""
+    page.goto("https://studio.youtube.com/", wait_until="domcontentloaded")
+    if "accounts.google.com" in page.url:
+        raise PostError("not signed in to YouTube; run `python publish.py login` first")
+    page.wait_for_url(CHANNEL_RE, timeout=60000)
+    return CHANNEL_RE.search(page.url).group(1)
+
+
+def check_youtube_channel(page: Page, handle: str) -> str:
+    """Make sure Chrome is posting as `handle`. Returns its channel ID, or raises PostError."""
+    want = youtube_channel_id(page, handle)
+    have = youtube_active_channel(page)
+    if have != want:
+        raise PostError(f"Chrome is signed in to YouTube channel {have}, not {handle} ({want}). In the ReelGen "
+                        f"Chrome window, click the profile picture > Switch account > {handle}, then run again. "
+                        "Nothing was posted.")
+    return want
+
+
+def post_youtube(page: Page, video: Path, title: str, description: str, dry_run: bool,
+                 channel_id: str) -> Optional[str]:
     try:
         page.goto("https://www.youtube.com/upload", wait_until="domcontentloaded")
         if "accounts.google.com" in page.url:
             raise PostError("not signed in to YouTube; run `python publish.py login` first")
+        page.wait_for_url(CHANNEL_RE, timeout=60000)
+        if CHANNEL_RE.search(page.url).group(1) != channel_id:  # checked again right before uploading
+            raise PostError(f"YouTube Studio opened channel {CHANNEL_RE.search(page.url).group(1)}, "
+                            f"not {channel_id}. Nothing was posted.")
         page.locator('input[type="file"]').first.set_input_files(str(video))
         pause(3, 5)
         title_box = first_visible(page, page.locator("#title-textarea #textbox"),
@@ -111,12 +154,36 @@ def _click_text_button(page: Page, name: str, timeout: float = 20000) -> None:
                   page.get_by_text(name, exact=True), timeout=timeout).click()
 
 
-def post_instagram(page: Page, video: Path, caption: str, dry_run: bool) -> Optional[str]:
+IG_USER_JS = """async () => {
+  try {
+    const r = await fetch('/api/v1/accounts/current_user/?edit=true',
+      { credentials: 'include', headers: { 'X-IG-App-ID': '936619743392459' } });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return (j.user && j.user.username) || null;
+  } catch (e) { return null; }
+}"""
+
+
+def check_instagram_account(page: Page, handle: str) -> None:
+    """Make sure Chrome is posting as `handle` on Instagram, or raise PostError."""
+    want = handle.lstrip("@").lower()
+    page.goto("https://www.instagram.com/", wait_until="domcontentloaded")
+    pause(3, 5)
+    if "accounts/login" in page.url or page.locator('input[name="username"]').count():
+        raise PostError("not signed in to Instagram; run `python publish.py login` first")
+    have = page.evaluate(IG_USER_JS)
+    if have is None:  # fall back to the Profile link in the side menu
+        link = page.locator(f'a[href="/{want}/"]')
+        have = want if link.count() else "an unknown account"
+    if have.lower() != want:
+        raise PostError(f"Chrome is signed in to Instagram as {have}, not @{want}. In the ReelGen Chrome window, "
+                        f"switch to @{want}, then run again. Nothing was posted.")
+
+
+def post_instagram(page: Page, video: Path, caption: str, dry_run: bool, handle: str) -> Optional[str]:
     try:
-        page.goto("https://www.instagram.com/", wait_until="domcontentloaded")
-        pause(3, 5)
-        if "accounts/login" in page.url or page.locator('input[name="username"]').count():
-            raise PostError("not signed in to Instagram; run `python publish.py login` first")
+        check_instagram_account(page, handle)  # checked right before every upload
         first_visible(page, page.locator('svg[aria-label="New post"]'), page.locator('svg[aria-label="Create"]'),
                       page.get_by_role("link", name=re.compile("^(New post|Create)$"))).click()
         pause()

@@ -15,6 +15,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from . import backlog as B
+from . import activity as A
 from . import config, retention
 from .models import Research, ScenePlan, Script
 
@@ -53,9 +54,11 @@ def start(topic_id: str | None) -> int:
     tid, title = topic["id"], topic["title"]
     rd = config.RUNS_DIR / f"{date.today().isoformat()}-{B.slugify(title)}"
     rel = str(rd.relative_to(config.ROOT))
-    B.update(lambda d: B.set_fields(B.find(d, tid), status=B.IN_PROGRESS, started_at=B.now(), run_dir=rel,
-                                    attempts=B.find(d, tid).get("attempts", 0) + 1, error=None),
-             f"Start: {title}")
+    def begin(d):
+        B.set_fields(B.find(d, tid), status=B.IN_PROGRESS, started_at=B.now(), run_dir=rel,
+                     attempts=B.find(d, tid).get("attempts", 0) + 1, error=None)
+        A.record(d, A.COLLABORATOR, "Picked the next topic from the queue and started the run.", topic=title)
+    B.update(begin, f"Start: {title}")
     rd.mkdir(parents=True, exist_ok=True)
     _out({"status": "started", "topic_id": tid, "title": title, "notes": topic.get("notes", ""),
           "run_dir": rel, "write": [f"{rel}/{f}" for f, _ in FILES.values()] + [f"{rel}/research_notes.md"]})
@@ -142,7 +145,7 @@ def finish(topic_id: str, accept: bool = False) -> int:
     if validate(rel) != 0:
         return 1
     rd = config.ROOT / rel
-    research = Research.model_validate_json((rd / "research.json").read_text())  # noqa: F841 (validated)
+    research = Research.model_validate_json((rd / "research.json").read_text())
     script = Script.model_validate_json((rd / "script.json").read_text())
     plan = ScenePlan.model_validate_json((rd / "scene_plan.json").read_text())
     lex = sound_engineer.load_pronunciations()
@@ -173,7 +176,12 @@ def finish(topic_id: str, accept: bool = False) -> int:
     name = f"{date.today().isoformat()} {topic['title']}.mp4"
     up = drive.upload(out, name, description=scripter.full_caption(script))
 
+    from . import audio
+    seconds = audio.duration(out)
+    n_fixes = len(json.loads(extra.read_text())) if extra.exists() else 0
+
     def done(d):
+        A.production(d, topic["title"], research, script, report, seconds, respellings=n_fixes, test_summary=summary)
         B.set_fields(B.find(d, topic_id), status=B.READY, finished_at=B.now(), drive_file_id=up["id"],
                      drive_link=up.get("webViewLink"), caption=scripter.full_caption(script),
                      youtube_title=script.youtube_title, youtube_description=script.youtube_description,
@@ -188,6 +196,7 @@ def fail(topic_id: str, message: str) -> int:
         t = B.find(d, topic_id)
         give_up = t.get("attempts", 1) >= config.MAX_ATTEMPTS
         B.set_fields(t, status=B.FAILED if give_up else B.QUEUED, error=message[:500])
+        A.record(d, A.COLLABORATOR, f"Run failed: {message}", ok=False, topic=t["title"])
     title = B.find(B.load(), topic_id)["title"]
     B.update(m, f"Failed: {title}")
     return 0

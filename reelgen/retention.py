@@ -13,6 +13,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 from typing import Callable, List, Tuple
 
+from . import activity as A
 from . import backlog as B
 from . import config
 
@@ -62,5 +63,7 @@ def apply(delete_file: Callable[[str], None], room_for: int = 1) -> bool:
         def mark(data):
             for tid in ids:
                 B.set_fields(B.find(data, tid), drive_deleted_at=B.now())
+            A.record(data, A.DRIVE_KEEPER, f"Removed {len(ids)} video(s) from Drive (posted 3+ days ago, "
+                                           "rejected, or to make room).")
         B.update(mark, f"Drive cleanup: removed {len(ids)} video(s)")
     return has_room

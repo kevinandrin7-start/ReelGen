@@ -45,9 +45,14 @@ class Backlog:
             time.sleep(2 + attempt * 2)
         raise RuntimeError("could not save backlog (kept conflicting)")
 
-    def set(self, topic_id: str, message: str, **fields) -> dict:
+    def set(self, topic_id: str, message: str, agent_task: str | None = None, agent_ok: bool = True,
+            **fields) -> dict:
+        """Update one topic. agent_task, if given, becomes the publisher's last task on the dashboard."""
         def m(d):
             t = next(t for t in d["topics"] if t["id"] == topic_id)
+            if agent_task:
+                d.setdefault("agents", {})["publisher"] = {"task": agent_task[:300], "ok": agent_ok,
+                                                           "topic": t.get("title"), "at": now()}
             for k, v in fields.items():
                 if k == "posted":
                     t.setdefault("posted", {}).update(v)

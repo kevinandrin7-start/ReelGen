@@ -39,6 +39,9 @@ from reelgen.gcloud import drive  # noqa: E402
 import sites  # noqa: E402
 
 log = logging.getLogger("publisher")
+# The only accounts the publisher may post from. It checks them before every upload.
+YOUTUBE_HANDLE = "@" + os.environ.get("YOUTUBE_HANDLE", "@BrainBytesDaily-q9h").strip().lstrip("@")
+INSTAGRAM_HANDLE = os.environ.get("INSTAGRAM_HANDLE", "").strip()
 PROFILE = Path(os.environ.get("REELGEN_CHROME_PROFILE", HERE / "chrome-profile"))
 DOWNLOADS = HERE / "downloads"
 
@@ -55,6 +58,8 @@ def cmd_login(args) -> None:
         ctx = browser(p)
         ctx.pages[0].goto("https://www.instagram.com/accounts/login/")
         ctx.new_page().goto("https://studio.youtube.com/")
+        print(f"Post only as YouTube {YOUTUBE_HANDLE}"
+              + (f" and Instagram @{INSTAGRAM_HANDLE.lstrip('@')}" if INSTAGRAM_HANDLE else "") + ".")
         input("Sign in to the channel's Instagram and YouTube accounts in the Chrome window, "
               "then press Enter here to save the session... ")
         ctx.close()
@@ -64,7 +69,8 @@ def cmd_run(args) -> int:
     bl = Backlog(os.environ["GITHUB_REPO"], os.environ["GITHUB_TOKEN"])
     data, _ = bl.load()
     todo = [t for t in data["topics"] if t.get("status") in ("approved", "posting") and t.get("drive_file_id")
-            and not t.get("drive_deleted_at")]
+            and not t.get("drive_deleted_at")
+            and not ((t.get("posted") or {}).get("youtube") and not INSTAGRAM_HANDLE)]  # nothing left to post
     todo.sort(key=lambda t: t.get("approved_at") or t.get("updated_at") or "")
     todo = todo[: args.max]
     if not todo:
@@ -72,9 +78,22 @@ def cmd_run(args) -> int:
         return 0
     DOWNLOADS.mkdir(exist_ok=True)
     failures = 0
+    if not INSTAGRAM_HANDLE:
+        log.warning("INSTAGRAM_HANDLE is not set in publisher/.env, so nothing is posted to Instagram yet")
     with sync_playwright() as p:
         ctx = browser(p)
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        try:  # never post from the wrong channel
+            yt_channel = sites.check_youtube_channel(page, YOUTUBE_HANDLE)
+            log.info("posting as YouTube %s (%s)", YOUTUBE_HANDLE, yt_channel)
+        except sites.PostError as e:
+            log.error("%s", e)
+            if not args.dry_run:
+                bl.update(lambda d: d.setdefault("agents", {}).update(publisher={
+                    "task": f"Stopped before posting: {e}"[:300], "ok": False, "topic": None, "at": now()}),
+                    "Publisher: wrong YouTube channel")
+            ctx.close()
+            return 1
         for t in todo:
             tid, title = t["id"], t["title"]
             posted = dict(t.get("posted") or {})
@@ -87,24 +106,29 @@ def cmd_run(args) -> int:
             try:
                 if not posted.get("youtube"):
                     url = sites.post_youtube(page, video, t.get("youtube_title") or title,
-                                             t.get("youtube_description") or "", args.dry_run)
+                                             t.get("youtube_description") or "", args.dry_run, yt_channel)
                     if not args.dry_run:
                         posted.update(youtube=now(), youtube_url=url)
                         bl.set(tid, f"Posted to YouTube: {title}", posted={"youtube": now(), "youtube_url": url})
-                if not posted.get("instagram"):
-                    sites.post_instagram(page, video, t.get("caption") or title, args.dry_run)
+                if not posted.get("instagram") and INSTAGRAM_HANDLE:
+                    sites.post_instagram(page, video, t.get("caption") or title, args.dry_run, INSTAGRAM_HANDLE)
                     if not args.dry_run:
                         posted.update(instagram=now())
                         bl.set(tid, f"Posted to Instagram: {title}", posted={"instagram": now()})
-                if not args.dry_run:
-                    bl.set(tid, f"Posted: {title}", status="posted")
+                if not args.dry_run and posted.get("youtube") and posted.get("instagram"):
+                    bl.set(tid, f"Posted: {title}", status="posted",
+                           agent_task="Posted the video to YouTube Shorts and Instagram Reels.")
                     video.unlink(missing_ok=True)
+                elif not args.dry_run:  # Instagram not set up yet: stays approved until it is
+                    bl.set(tid, f"Posted to YouTube only: {title}", status="approved",
+                           agent_task=f"Posted the video to YouTube Shorts ({YOUTUBE_HANDLE}). Instagram is not set up yet.")
                 log.info("done: %s%s", title, " (dry run, nothing published)" if args.dry_run else "")
             except sites.PostError as e:
                 failures += 1
                 log.error("%s", e)
                 if not args.dry_run:
-                    bl.set(tid, f"Posting failed: {title}", status="approved", error=str(e)[:400])
+                    bl.set(tid, f"Posting failed: {title}", status="approved", error=str(e)[:400],
+                           agent_task=f"Posting failed: {e}", agent_ok=False)
             sites.pause(20, 40)  # space posts out
         ctx.close()
     return 1 if failures else 0
