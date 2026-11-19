@@ -36,6 +36,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_6cbff1c8f5",
+      "title": "What are embeddings?",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127670.205,
+      "created_at": "2026-11-19T22:34:30Z",
+      "updated_at": "2026-11-19T22:34:30Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
