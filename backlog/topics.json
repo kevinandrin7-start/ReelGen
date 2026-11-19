@@ -168,6 +168,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_33a2119075",
+      "title": "Metadata filtering",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127741.843,
+      "created_at": "2026-11-19T22:35:41Z",
+      "updated_at": "2026-11-19T22:35:41Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
