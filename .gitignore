@@ -1,0 +1,10 @@
+.work/
+__pycache__/
+*.pyc
+.pytest_cache/
+runs/*-rag-demo/
+publisher/.env
+publisher/chrome-profile/
+publisher/downloads/
+publisher/screenshots/
+.venv/

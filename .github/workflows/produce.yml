@@ -1,0 +1,79 @@
+name: Produce videos
+
+on:
+  schedule:
+    # Twice a day (times are UTC). Each run makes one video from the top of the queue.
+    - cron: "0 13 * * *"
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic id to make now (leave empty for the next in the queue)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: produce
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: pip install -r requirements.txt
+      - name: Configure git
+        run: |
+          git config user.name "reelgen-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Make video
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          REELGEN_MODEL: ${{ vars.REELGEN_MODEL || 'claude-opus-5-5' }}
+          REELGEN_GIT_PUSH: "1"
+          TOPIC_ID: ${{ inputs.topic }}
+        run: |
+          if [ -n "$TOPIC_ID" ]; then python -m reelgen produce --topic "$TOPIC_ID"; else python -m reelgen produce; fi
+      - name: Keep the video for 7 days as a backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos
+          path: .work/**/final.mp4
+          retention-days: 7
+          if-no-files-found: ignore
+
+  cleanup:
+    # Apply the Drive rules every day even if nothing new is made.
+    if: always() && github.event_name == 'schedule'
+    needs: produce
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: |
+          git config user.name "reelgen-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          REELGEN_GIT_PUSH: "1"
+        run: python -m reelgen cleanup

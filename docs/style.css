@@ -1,0 +1,59 @@
+:root {
+  --bg: #0a0e1e; --bg2: #141a38; --card: #1b2244; --card-hi: #222c5a; --line: #2c3566;
+  --text: #f1f5ff; --muted: #94a0c4; --teal: #2dd4bf; --amber: #fbbf24; --red: #f87171; --violet: #a78bfa;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 Inter, system-ui, -apple-system, Segoe UI, sans-serif; color: var(--text);
+  background: linear-gradient(var(--bg), var(--bg2)) fixed; min-height: 100vh; }
+.top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px;
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(10,14,30,.92); backdrop-filter: blur(6px); z-index: 2; }
+.brand { font-weight: 700; font-size: 18px; display: flex; gap: 8px; align-items: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.top-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+main { max-width: 960px; margin: 0 auto; padding: 16px; }
+h2 { font-size: 16px; margin: 28px 0 10px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+.card h2 { margin-top: 0; }
+.count { color: var(--teal); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+input, textarea { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; font: inherit; margin-bottom: 8px; }
+input:focus, textarea:focus { outline: 2px solid var(--teal); border-color: transparent; }
+label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+button, .btn { font: inherit; font-weight: 600; border-radius: 10px; padding: 8px 14px; cursor: pointer;
+  border: 1px solid transparent; text-decoration: none; display: inline-block; }
+.primary { background: var(--teal); color: #08201d; }
+.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+.danger { background: transparent; color: var(--red); border-color: #5a2a36; }
+button:disabled { opacity: .5; cursor: wait; }
+.hint { color: var(--muted); font-size: 13px; }
+.grid { display: grid; gap: 12px; }
+.video { display: grid; grid-template-columns: 150px 1fr; gap: 16px; }
+.thumb { width: 150px; aspect-ratio: 9/16; object-fit: cover; border-radius: 10px; background: var(--bg); }
+.ytitle { margin: 4px 0 8px; font-size: 16px; }
+.caption { white-space: pre-wrap; font: 13px/1.5 inherit; font-family: inherit; color: var(--muted);
+  background: var(--bg); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; max-height: 160px; overflow: auto; }
+.tests { font-size: 13px; margin-bottom: 10px; }
+.pass { color: var(--teal); } .fail { color: var(--amber); }
+.list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.list li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.list .t { font-weight: 600; }
+.list .meta { color: var(--muted); font-size: 13px; }
+.list .acts { display: flex; gap: 4px; }
+.list .acts button { padding: 4px 9px; font-size: 13px; }
+.pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.pill.ok { color: var(--teal); border-color: #1d5c56; } .pill.warn { color: var(--amber); border-color: #6b5413; }
+.pill.bad { color: var(--red); border-color: #5a2a36; }
+.status { font-size: 13px; }
+.banner { background: #3b2a0a; border: 1px solid #6b5413; color: var(--amber); padding: 10px 12px; border-radius: 10px; }
+.banner.ok { background: #0f3330; border-color: #1d5c56; color: var(--teal); }
+.empty { color: var(--muted); font-size: 14px; padding: 4px 2px; }
+dialog { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 14px; width: min(480px, 92vw); }
+dialog::backdrop { background: rgba(0,0,0,.6); }
+@media (max-width: 560px) {
+  .video { grid-template-columns: 1fr; }
+  .thumb { width: 100%; max-width: 220px; }
+}
+a { color: var(--teal); }
+.banner { margin-bottom: 14px; }

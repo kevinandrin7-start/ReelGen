@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReelGen Backlog</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span>ReelGen</div>
+  <div class="top-actions">
+    <button id="runNow" class="ghost" title="Start the pipeline on GitHub now">Run now</button>
+    <button id="refresh" class="ghost">Refresh</button>
+    <button id="settingsBtn" class="ghost">Settings</button>
+  </div>
+</header>
+
+<main>
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="card add">
+    <h2>Add a topic</h2>
+    <form id="addForm">
+      <input id="title" placeholder="e.g. Vector databases" required maxlength="120">
+      <textarea id="notes" rows="2" placeholder="Optional notes for the researcher (angle, audience, sources to use)"></textarea>
+      <div class="row"><button type="submit" class="primary">Add to backlog</button>
+        <span class="hint">Two topics are made per day, top of the queue first.</span></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Waiting for your approval <span class="count" id="c-ready"></span></h2>
+    <div id="ready" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Queue <span class="count" id="c-queued"></span></h2>
+    <ol id="queued" class="list"></ol>
+  </section>
+
+  <section>
+    <h2>In progress and posting <span class="count" id="c-active"></span></h2>
+    <ul id="active" class="list"></ul>
+  </section>
+
+  <section>
+    <h2>Posted <span class="count" id="c-posted"></span></h2>
+    <ul id="posted" class="list"></ul>
+  </section>
+
+  <section>
+    <h2>Failed or rejected <span class="count" id="c-failed"></span></h2>
+    <ul id="failed" class="list"></ul>
+  </section>
+</main>
+
+<dialog id="settings">
+  <form method="dialog" id="settingsForm">
+    <h2>Settings</h2>
+    <label>Repository <input id="repo" placeholder="owner/name"></label>
+    <label>GitHub token
+      <input id="token" type="password" placeholder="github_pat_...">
+    </label>
+    <p class="hint">A fine-grained token for this repository only, with <b>Contents: read and write</b> and
+      <b>Actions: read and write</b>. It is saved only in this browser.</p>
+    <div class="row"><button class="primary" value="save">Save</button><button value="cancel" class="ghost">Cancel</button></div>
+  </form>
+</dialog>
+
+<template id="readyTpl">
+  <article class="card video">
+    <img class="thumb" alt="">
+    <div class="body">
+      <div class="status"></div>
+      <h3 class="ytitle"></h3>
+      <pre class="caption"></pre>
+      <div class="tests"></div>
+      <div class="row">
+        <a class="watch ghost btn" target="_blank" rel="noopener">Watch on Drive</a>
+        <button class="approve primary">Approve</button>
+        <button class="remake ghost">Re-make</button>
+        <button class="reject danger">Reject</button>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "topic": "RAG",
+  "one_line_definition": "RAG lets an AI look up relevant documents and use them to answer, instead of relying only on what it memorised in training.",
+  "why_it_matters": "Answers become current, grounded in your own documents, and can cite sources.",
+  "pain_point": "Chatbots confidently give outdated or made-up answers.",
+  "how_it_works": ["Embed the question", "Search a vector database for similar text", "Retrieve the top chunks", "Generate the answer using them"],
+  "key_facts": [{"fact": "RAG was introduced by Lewis et al. in 2020.", "source_url": "https://arxiv.org/abs/2005.11401"}],
+  "analogies": ["An open-book exam", "A librarian who checks the shelves before answering"],
+  "misconceptions": ["RAG retrains the model"],
+  "acronym_expansion": "Retrieval-Augmented Generation",
+  "sources": ["https://arxiv.org/abs/2005.11401"]
+}
