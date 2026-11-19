@@ -1,0 +1,67 @@
+{
+  "passed": false,
+  "checks": [
+    {
+      "name": "resolution",
+      "passed": true,
+      "detail": "1080x1920"
+    },
+    {
+      "name": "frame rate",
+      "passed": true,
+      "detail": "30.00 fps"
+    },
+    {
+      "name": "length",
+      "passed": true,
+      "detail": "30.00s"
+    },
+    {
+      "name": "audio track",
+      "passed": true,
+      "detail": "aac"
+    },
+    {
+      "name": "loudness",
+      "passed": false,
+      "detail": "-16.2 LUFS (target -14.0)"
+    },
+    {
+      "name": "true peak",
+      "passed": true,
+      "detail": "-1.4 dBTP"
+    },
+    {
+      "name": "narration matches script",
+      "passed": true,
+      "detail": "word error rate 1%; differs at: it"
+    },
+    {
+      "name": "each scene's line is right",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "pacing",
+      "passed": false,
+      "detail": "hook 318 wpm; problem 233 wpm"
+    },
+    {
+      "name": "no awkward pauses",
+      "passed": true,
+      "detail": "ok"
+    }
+  ],
+  "transcript": "how does your phone know what you'll type next try writing rules to spot a cat in every photo there are endless possibilities meet AI artificial intelligence machines that mimic human thinking instead of rules it learns from data first is studies millions of examples then it finds the patterns builds a model from them and uses that model to predict new things like your next word AI learns like a student practice not a rulebook follow for more",
+  "wer": 0.012345679012345678,
+  "scene_wer": [
+    0.0,
+    0.0,
+    0.0,
+    0.029,
+    0.0
+  ],
+  "misheard_words": [
+    "it"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "topic": "What is AI?",
+  "one_line_definition": "AI is technology that lets computers mimic human thinking skills like understanding language, recognising images and making predictions, mostly by learning patterns from data.",
+  "why_it_matters": "It powers everyday tools like recommendations, spam filters, voice assistants, photo tagging and translation.",
+  "pain_point": "You can't hand-write rules for every possible photo, sentence or situation; there are endless cases and rule-based programs break on new ones.",
+  "how_it_works": [
+    "Instead of hand-written rules, it is given lots of example data.",
+    "It studies the examples (often millions of them).",
+    "It finds the patterns the examples share.",
+    "Those patterns become a trained model.",
+    "The model uses them to predict or decide about new data it hasn't seen."
+  ],
+  "key_facts": [
+    {"fact": "AI refers to technologies that let machines mimic cognitive functions associated with human intelligence, such as understanding language, analysing data and making recommendations.", "source_url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"},
+    {"fact": "Machine learning is a subset of AI: instead of explicit programming, algorithms analyse large amounts of data, learn from it and make informed decisions; more data generally improves the model.", "source_url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"},
+    {"fact": "Machine learning algorithms learn the patterns of training data and then make inferences about new data.", "source_url": "https://www.ibm.com/think/topics/machine-learning"},
+    {"fact": "AI is the overarching field; machine learning is a subset of AI, and deep learning is a subfield of machine learning built on neural networks.", "source_url": "https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks"},
+    {"fact": "Deep learning typically requires very large datasets, often millions of data points.", "source_url": "https://cloud.google.com/discover/deep-learning-vs-machine-learning"},
+    {"fact": "Before machine learning, AI programs had to be programmed to respond to a limited set of inputs, and programmers had to add features by hand to improve them.", "source_url": "https://www.coursera.org/articles/ai-vs-deep-learning-vs-machine-learning-beginners-guide"}
+  ],
+  "analogies": [
+    "A student who learns from lots of practice questions instead of memorising a rulebook.",
+    "A child learning what a cat is by seeing many cats, not by reading a definition."
+  ],
+  "misconceptions": [
+    "AI is not a single robot or program; it is a broad set of techniques.",
+    "Most AI today doesn't think like a person; it finds patterns in data and predicts."
+  ],
+  "acronym_expansion": "Artificial Intelligence",
+  "sources": [
+    "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+    "https://cloud.google.com/discover/deep-learning-vs-machine-learning",
+    "https://www.ibm.com/think/topics/machine-learning",
+    "https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks",
+    "https://www.coursera.org/articles/ai-vs-deep-learning-vs-machine-learning-beginners-guide",
+    "https://professionalprograms.mit.edu/blog/technology/machine-learning-vs-artificial-intelligence/"
+  ]
+}

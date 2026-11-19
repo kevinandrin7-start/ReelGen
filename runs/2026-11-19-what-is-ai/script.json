@@ -1,0 +1,41 @@
+{
+  "title": "What is AI?",
+  "lines": [
+    {
+      "scene": "hook",
+      "narration": "How does your phone know what you'll type next?",
+      "spoken": "How does your phone know what you'll type next?"
+    },
+    {
+      "scene": "problem",
+      "narration": "Try writing rules to spot a cat in every photo. There are endless possibilities.",
+      "spoken": "Try writing rules to spot a cat in every photo. There are endless possibilities."
+    },
+    {
+      "scene": "define",
+      "narration": "Meet AI, artificial intelligence. Machines that mimic human thinking.",
+      "spoken": "Meet A I, artificial intelligence. Machines that mimic human thinking."
+    },
+    {
+      "scene": "steps",
+      "narration": "Instead of rules, it learns from data. First, it studies millions of examples. Then it finds the patterns, builds a model from them, and uses that model to predict new things, like your next word.",
+      "spoken": "Instead of rules, it learns from data. First, it studies millions of examples. Then it finds the patterns, builds a model from them, and uses that model to predict new things, like your next word."
+    },
+    {
+      "scene": "payoff",
+      "narration": "AI learns like a student: practice, not a rulebook. Follow for more!",
+      "spoken": "A I learns like a student: practice, not a rulebook. Follow for more!"
+    }
+  ],
+  "instagram_caption": "How does your phone guess your next word? It isn't following a giant rulebook. AI learns patterns from millions of examples, then uses them to predict new things. What's the most useful AI you use every day?",
+  "hashtags": [
+    "#AI",
+    "#ArtificialIntelligence",
+    "#MachineLearning",
+    "#TechExplained",
+    "#LearnAI",
+    "#Shorts"
+  ],
+  "youtube_title": "What is AI? Explained in 30 seconds #Shorts",
+  "youtube_description": "AI lets computers mimic human thinking skills. Instead of following hand-written rules, it learns patterns from huge amounts of example data, then uses them to make predictions, like your phone suggesting your next word."
+}

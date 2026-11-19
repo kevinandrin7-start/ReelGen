@@ -1,0 +1,19 @@
+{
+  "hook": {"line1": "Your phone knows", "line2": "your next word?", "icon": "chat", "subline": "AI explained in 30 sec"},
+  "problem": {"headline": "Rules can't cover it all",
+    "pains": [{"text": "Endless photos to check", "icon": "layers"},
+              {"text": "A rule for every case?", "icon": "docs"},
+              {"text": "New cases break the rules", "icon": "warning"}],
+    "tags": ["TOO MANY", "BRITTLE", "MANUAL"]},
+  "define": {"intro": "Meet", "term": "AI", "expansion": "Artificial Intelligence", "analogy": "Machines that mimic thinking"},
+  "steps": {"label": "How AI learns", "steps": [
+      {"title": "Learn from data", "sub": "Examples, not rules", "icon": "database"},
+      {"title": "Study examples", "sub": "Millions of them", "icon": "docs"},
+      {"title": "Find patterns", "sub": "What the examples share", "icon": "search"},
+      {"title": "Build a model", "sub": "Patterns become a model", "icon": "brain"},
+      {"title": "Predict new things", "sub": "Like your next word", "icon": "spark"}],
+    "result": "Learns from data, not rules"},
+  "payoff": {"line1": "AI =", "highlight": "a fast learner", "line3": "not a rulebook",
+    "bad": {"title": "Rulebook", "sub": "Breaks on new cases"},
+    "good": {"title": "AI", "sub": "Learns from examples"}}
+}
