@@ -97,14 +97,16 @@ def cmd_run(args) -> int:
                         posted.update(instagram=now())
                         bl.set(tid, f"Posted to Instagram: {title}", posted={"instagram": now()})
                 if not args.dry_run:
-                    bl.set(tid, f"Posted: {title}", status="posted")
+                    bl.set(tid, f"Posted: {title}", status="posted",
+                           agent_task="Posted the video to YouTube Shorts and Instagram Reels.")
                     video.unlink(missing_ok=True)
                 log.info("done: %s%s", title, " (dry run, nothing published)" if args.dry_run else "")
             except sites.PostError as e:
                 failures += 1
                 log.error("%s", e)
                 if not args.dry_run:
-                    bl.set(tid, f"Posting failed: {title}", status="approved", error=str(e)[:400])
+                    bl.set(tid, f"Posting failed: {title}", status="approved", error=str(e)[:400],
+                           agent_task=f"Posting failed: {e}", agent_ok=False)
             sites.pause(20, 40)  # space posts out
         ctx.close()
     return 1 if failures else 0

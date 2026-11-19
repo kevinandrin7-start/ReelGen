@@ -40,6 +40,7 @@
     sha = j.sha;
     data = JSON.parse(b64decode(j.content));
     render();
+    window.ReelGenWorkflow?.update(data);
   }
 
   // Apply a change to the freshest copy and save; retries if the pipeline saved in between.
@@ -177,6 +178,7 @@
       banner("Added to the queue.", true);
     });
   };
+  $("#workflowBtn").onclick = () => window.ReelGenWorkflow.open(data);
   $("#refresh").onclick = (e) => act(e.target, load);
   $("#settingsBtn").onclick = () => { $("#repo").value = repo; $("#token").value = token; $("#settings").showModal(); };
   $("#settingsForm").onsubmit = (e) => {

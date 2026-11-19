@@ -10,6 +10,7 @@
 <header class="top">
   <div class="brand"><span class="dot"></span>ReelGen</div>
   <div class="top-actions">
+    <button id="workflowBtn" class="ghost">Show Workflow</button>
     <button id="refresh" class="ghost">Refresh</button>
     <button id="settingsBtn" class="ghost">Settings</button>
   </div>
@@ -67,6 +68,27 @@
   </form>
 </dialog>
 
+<dialog id="workflow" aria-labelledby="wfTitle">
+  <div class="wf-head">
+    <div>
+      <h2 id="wfTitle">How ReelGen works</h2>
+      <p id="wfNow" class="wf-now"></p>
+    </div>
+    <form method="dialog"><button class="ghost" aria-label="Close">Close</button></form>
+  </div>
+  <div class="wf-legend">
+    <span style="--c:var(--amber)">You</span>
+    <span style="--c:var(--teal)">Daily Claude session, 7:47 AM</span>
+    <span style="--c:#60a5fa">Google Drive</span>
+    <span style="--c:var(--violet)">Your laptop</span>
+    <span style="--c:#f472b6">Social accounts</span>
+  </div>
+  <div id="wf" class="wf"></div>
+  <p class="hint">Hover over an agent, or tap it, to see what it does and its last task.
+    Solid arrows are the main flow. Dashed arrows are loops and cleanup.</p>
+  <div id="wfTip" class="wf-tip" role="tooltip" hidden></div>
+</dialog>
+
 <template id="readyTpl">
   <article class="card video">
     <img class="thumb" alt="">
@@ -85,6 +107,7 @@
   </article>
 </template>
 
+<script src="workflow.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

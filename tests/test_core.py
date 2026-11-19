@@ -126,3 +126,22 @@ def test_session_validate_and_length_warnings(tmp_path, monkeypatch, capsys):
     assert any("hook.line1" in w for w in session._plan_length_warnings(plan))
     (rd / "script.json").write_text('{"title": "x"}')
     assert session.validate("runs/x") == 1
+
+
+def test_activity_records_each_agent():
+    import json
+    from reelgen import activity as A
+    from reelgen.models import Research, Script, TestReport
+    fx = Path(__file__).resolve().parent.parent / "fixtures"
+    research = Research.model_validate_json((fx / "rag_research.json").read_text())
+    script = Script.model_validate_json((fx / "rag_script.json").read_text())
+    report = TestReport(passed=True, checks=[], wer=0.04)
+    data = {"version": 1, "topics": []}
+    A.production(data, "RAG", research, script, report, 30.0, respellings=1, test_summary="All checks passed")
+    ag = data["agents"]
+    for k in (A.RESEARCHER, A.SCRIPTER, A.DIRECTOR, A.SOUND, A.EDITOR, A.TESTER, A.DRIVE, A.COLLABORATOR):
+        assert ag[k]["topic"] == "RAG" and ag[k]["ok"] and ag[k]["at"].endswith("Z")
+    assert "with 1 pronunciation fix." in ag[A.SOUND]["task"]
+    assert "30.0-second" in ag[A.EDITOR]["task"]
+    assert "4%" in ag[A.TESTER]["task"]
+    json.dumps(data)  # stays plain JSON for the dashboard

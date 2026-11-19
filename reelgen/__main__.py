@@ -17,6 +17,7 @@ import traceback
 from datetime import date
 from pathlib import Path
 
+from . import activity as A
 from . import backlog as B
 from . import config, retention
 
@@ -58,16 +59,24 @@ def produce_one(topic_id: str | None) -> bool:
         log.info("backlog is empty")
         return False
     tid, title = topic["id"], topic["title"]
-    B.update(lambda d: B.set_fields(B.find(d, tid), status=B.IN_PROGRESS, started_at=B.now(),
-                                    attempts=B.find(d, tid).get("attempts", 0) + 1, error=None),
-             f"Start: {title}")
+    def begin(d):
+        B.set_fields(B.find(d, tid), status=B.IN_PROGRESS, started_at=B.now(),
+                     attempts=B.find(d, tid).get("attempts", 0) + 1, error=None)
+        A.record(d, A.COLLABORATOR, "Picked the next topic from the queue and started the run.", topic=title)
+    B.update(begin, f"Start: {title}")
     try:
         res = collaborator.produce(title, topic.get("notes", ""))
         name = f"{date.today().isoformat()} {title}.mp4"
         up = drive.upload(res.video, name, description=full_caption(res.script))
         rel_dir = str(res.run_dir.relative_to(config.ROOT))
 
+        from . import audio
+        from .models import Research
+        research = Research.model_validate_json((res.run_dir / "research.json").read_text())
+        seconds = audio.duration(res.video)
+
         def done(d):
+            A.production(d, title, research, res.script, res.report, seconds, test_summary=_summary(res.report))
             B.set_fields(B.find(d, tid), status=B.READY, finished_at=B.now(), run_dir=rel_dir,
                          drive_file_id=up["id"], drive_link=up.get("webViewLink"),
                          caption=full_caption(res.script), youtube_title=res.script.youtube_title,
@@ -85,6 +94,7 @@ def produce_one(topic_id: str | None) -> bool:
             t = B.find(d, tid)
             give_up = t.get("attempts", 1) >= config.MAX_ATTEMPTS
             B.set_fields(t, status=B.FAILED if give_up else B.QUEUED, error=msg)
+            A.record(d, A.COLLABORATOR, f"Run failed: {msg}", ok=False, topic=title)
         B.update(fail, f"Failed: {title}")
         raise
 
