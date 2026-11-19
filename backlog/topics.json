@@ -180,6 +180,18 @@
       "attempts": 0,
       "error": null,
       "posted": {}
+    },
+    {
+      "id": "t_8e29b8480a",
+      "title": "Agentic RAG",
+      "notes": "",
+      "status": "queued",
+      "order": 1795127748.652,
+      "created_at": "2026-11-19T22:35:48Z",
+      "updated_at": "2026-11-19T22:35:48Z",
+      "attempts": 0,
+      "error": null,
+      "posted": {}
     }
   ]
 }
