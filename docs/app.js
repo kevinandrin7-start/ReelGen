@@ -76,11 +76,26 @@
     try { await fn(); } catch (e) { banner(e.message); } finally { btn && (btn.disabled = false); }
   }
 
-  const empty = (who, text) => `<div class="empty">${window.ReelGenCrew ? window.ReelGenCrew.avatar(who, 44, false) : ""}<div class="bubble">${text}</div></div>`;
+  const empty = (icon, text) => `<div class="empty">${window.ReelGenCrew ? window.ReelGenCrew.icon(icon, 18) : ""}<span>${text}</span></div>`;
+
+  function statusbar() {
+    const n = (s) => data.topics.filter((t) => s.includes(t.status)).length;
+    const making = data.topics.find((t) => t.status === "in_progress");
+    const vault = data.topics.filter((t) => t.drive_file_id && !t.drive_deleted_at).length;
+    const item = (label, value, cls = "") => `<span class="sb ${cls}"><b>${label}</b>${value}</span>`;
+    $("#statusbar").innerHTML = [
+      making ? item("Now rendering", esc(making.title), "live") : item("Next run", "7:47 AM"),
+      item("Queue", n(["queued"])),
+      item("Review", n(["ready"]), n(["ready"]) ? "gold" : ""),
+      item("Publishing", n(["approved", "posting"])),
+      item("Released", n(["posted"])),
+      item("Vault", `${vault}/5`, vault >= 5 ? "warn" : ""),
+    ].join("");
+    $("#recDot").classList.toggle("on", !!making);
+  }
 
   function render() {
-    const say = $("#crewSay");
-    if (say && window.ReelGenWorkflow) say.textContent = window.ReelGenWorkflow.summary(data);
+    statusbar();
     const by = (s) => data.topics.filter((t) => s.includes(t.status));
     const queued = by(["queued"]).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     const ready = by(["ready"]);
@@ -92,12 +107,12 @@
 
     // waiting for approval
     const rw = $("#ready"); rw.innerHTML = "";
-    if (!ready.length) rw.innerHTML = empty("you_approve", "Nothing to approve yet. New videos pop up here when they're ready!");
+    if (!ready.length) rw.innerHTML = empty("approve", "No dailies to review. New cuts appear here when they're ready.");
     for (const t of ready) {
       const n = $("#readyTpl").content.cloneNode(true);
       const img = n.querySelector(".thumb");
-      if (t.thumbnail) img.src = `https://raw.githubusercontent.com/${repo}/main/${t.thumbnail}`; else img.remove();
-      n.querySelector(".status").innerHTML = `<span class="pill ${t.test_passed ? "ok" : "warn"}">${t.test_passed ? "Tests passed" : "Needs your review"}</span> <span class="hint">${esc(t.title)} · ${ago(t.finished_at)}</span>`;
+      if (t.thumbnail) img.src = `https://raw.githubusercontent.com/${repo}/main/${t.thumbnail}`; else img.closest(".frame").remove();
+      n.querySelector(".status").innerHTML = `<span class="pill ${t.test_passed ? "ok" : "warn"}">${t.test_passed ? "QC passed" : "QC flagged"}</span> <span class="hint">${esc(t.title)} · ${ago(t.finished_at)}</span>`;
       n.querySelector(".ytitle").textContent = t.youtube_title || t.title;
       n.querySelector(".caption").textContent = t.caption || "";
       n.querySelector(".tests").innerHTML = `<span class="${t.test_passed ? "pass" : "fail"}">${esc(t.test_summary || "")}</span>`;
@@ -118,7 +133,7 @@
 
     // queue
     const ql = $("#queued"); ql.innerHTML = "";
-    if (!queued.length) ql.innerHTML = empty("researcher", "The queue is empty... I'm hungry for topics! Add one above.");
+    if (!queued.length) ql.innerHTML = empty("script", "The script bin is empty. Add a topic to schedule the next production.");
     queued.forEach((t, i) => {
       const li = document.createElement("li");
       li.innerHTML = `<div><div class="t">${esc(t.title)}</div><div class="meta">${esc(t.notes || "")}${t.error ? ` <span class="pill warn">retrying: ${esc(t.error.slice(0, 80))}</span>` : ""}</div></div>
@@ -142,7 +157,7 @@
       ql.appendChild(li);
     });
 
-    const simple = (el, arr, meta, extra, who = "drive", quiet = "Nothing here yet!") => {
+    const simple = (el, arr, meta, extra, who = "film", quiet = "Nothing here yet.") => {
       el.innerHTML = arr.length ? "" : empty(who, quiet);
       for (const t of arr) {
         const li = document.createElement("li");
@@ -151,20 +166,20 @@
         el.appendChild(li);
       }
     };
-    const label = { in_progress: "Being made", approved: "Approved, waiting for the publisher", posting: "Posting" };
+    const label = { in_progress: "Rendering", approved: "Approved, waiting for the publisher", posting: "Publishing" };
     simple($("#active"), active, (t) => `<span class="pill">${label[t.status]}</span> ${ago(t.updated_at)}`, null,
-      "collaborator", "All quiet. Next mission: 7:47 AM!");
+      "clapper", "Nothing in production. Next run at 7:47 AM.");
     simple($("#posted"), posted, (t) => {
       const p = t.posted || {};
       const link = (k, n) => p[k + "_url"] ? `<a href="${esc(p[k + "_url"])}" target="_blank" rel="noopener">${n}</a>` : (p[k] ? n : `<s>${n}</s>`);
       return `${link("instagram", "Instagram")} · ${link("youtube", "YouTube")} · ${ago(t.updated_at)}${t.drive_deleted_at ? " · removed from Drive" : ""}`;
-    }, null, "socials", "No posts yet... we're waiting, Senpai!");
+    }, null, "broadcast", "Nothing released yet.");
     simple($("#failed"), failed, (t) => `<span class="pill ${t.status === "failed" ? "bad" : ""}">${t.status}</span> ${esc((t.error || "").slice(0, 160))}`,
       (t, acts) => {
         const b = document.createElement("button"); b.className = "ghost"; b.textContent = "Retry";
         b.onclick = () => act(b, () => change((d) => set(find(d, t.id), { status: "queued", attempts: 0, error: null }), `Retry: ${t.title}`));
         acts.appendChild(b);
-      }, "tester", "No failures. Case closed!");
+      }, "trash", "Nothing on the cutting room floor.");
   }
 
   function newTopic(title, notes) {
@@ -184,17 +199,17 @@
     });
   };
   $("#workflowBtn").onclick = () => window.ReelGenWorkflow.open(data);
-  if (window.ReelGenCrew) {
-    document.querySelectorAll("[data-av]").forEach((el) => (el.innerHTML = window.ReelGenCrew.avatar(el.dataset.av, el.classList.contains("big") ? 64 : el.classList.contains("logo") ? 44 : 34)));
-    const faces = $("#crewFaces");
-    for (const id of ["collaborator", "researcher", "scripter", "director", "sound_engineer", "editor", "tester", "drive", "drive_keeper", "publisher", "socials"]) {
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "face"; b.title = `${window.ReelGenCrew.PERSONAS[id].name} (${window.ReelGenCrew.PERSONAS[id].role})`;
-      b.innerHTML = window.ReelGenCrew.avatar(id, 46);
-      b.onclick = () => window.ReelGenWorkflow.open(data);
-      faces.appendChild(b);
-    }
-  }
+  const C = window.ReelGenCrew;
+  if (C) document.querySelectorAll("[data-icon]").forEach((el) => (el.innerHTML = C.icon(el.dataset.icon, el.classList.contains("brand-mark") ? 26 : 16)));
+
+  // Studio clock: local time as a 30 fps timecode.
+  const pad = (n) => String(n).padStart(2, "0");
+  const tick = () => {
+    const d = new Date();
+    $("#timecode").textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}:${pad(Math.floor(d.getMilliseconds() / 33.34))}`;
+  };
+  tick();
+  setInterval(tick, 1000 / 10);
   $("#refresh").onclick = (e) => act(e.target, load);
   $("#settingsBtn").onclick = () => { $("#repo").value = repo; $("#token").value = token; $("#settings").showModal(); };
   $("#settingsForm").onsubmit = (e) => {
