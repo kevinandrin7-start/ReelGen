@@ -80,7 +80,9 @@ def _speech_checks(path: Path, script: Script, timing: Timing, lex: Dict[str, st
                                       + (f"; differs at: {', '.join(report.misheard_words[:12])}"
                                          if report.misheard_words else "")))
 
-    # per-scene: bucket recognised words by the scene window they fall in
+    # per-scene: bucket recognised words by the scene window they fall in. Pace is measured on the
+    # audio itself (speech-to-text word times are rounded and cut a line's last word short)
+    quiet = audio.silences(wav, noise_db=-40, min_dur=0.12) if wav.exists() else []
     windows = [(s, s + d) for s, d in zip(timing.starts, timing.durations)]
     pacing_problems, gap_problems, scene_bad = [], [], []
     for i, (line, (ws, we)) in enumerate(zip(script.lines, windows)):
@@ -92,7 +94,7 @@ def _speech_checks(path: Path, script: Script, timing: Timing, lex: Dict[str, st
         if sw_wer > config.MAX_SCENE_WER:
             scene_bad.append(f"{line.scene} {sw_wer:.0%}")
         if len(sw) >= 3:
-            span = sw[-1][2] - sw[0][1]
+            span = _voiced_span(quiet, ws, we) if quiet else sw[-1][2] - sw[0][1]
             wpm = len(ref) / span * 60 if span > 0 else 0
             lo, hi = config.WPM_RANGE
             if not lo <= wpm <= hi:
@@ -100,7 +102,11 @@ def _speech_checks(path: Path, script: Script, timing: Timing, lex: Dict[str, st
             gaps = [b[1] - a[2] for a, b in zip(sw, sw[1:])]
             if gaps and max(gaps) > config.MAX_GAP_SECONDS:
                 gap_problems.append(f"{line.scene} {max(gaps):.1f}s pause")
-            if sw[-1][2] > we + 0.15:
+            if quiet:  # the cut to the next scene must land in a pause
+                past = i < len(windows) - 1 and not any(a <= we <= b for a, b in quiet)
+            else:
+                past = sw[-1][2] > we + 0.15
+            if past:
                 pacing_problems.append(f"{line.scene} runs past its scene")
     report.checks.append(Check(name="each scene's line is right", passed=not scene_bad,
                                detail="ok" if not scene_bad else "; ".join(scene_bad)))
@@ -108,6 +114,17 @@ def _speech_checks(path: Path, script: Script, timing: Timing, lex: Dict[str, st
                                detail="ok" if not pacing_problems else "; ".join(pacing_problems)))
     report.checks.append(Check(name="no awkward pauses", passed=not gap_problems,
                                detail="ok" if not gap_problems else "; ".join(gap_problems)))
+
+
+def _voiced_span(quiet: List[Tuple[float, float]], ws: float, we: float) -> float:
+    """Seconds from the first to the last sound inside [ws, we), given the silent stretches."""
+    start, end = ws, we
+    for a, b in quiet:
+        if a <= start < b:
+            start = b
+        if a < end <= b or (a < end and b >= we):
+            end = min(end, a)
+    return max(0.0, end - start)
 
 
 def failed_scene_indexes(report: TestReport) -> List[int]:

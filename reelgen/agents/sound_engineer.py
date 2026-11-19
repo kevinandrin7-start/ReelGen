@@ -10,7 +10,7 @@ from typing import Callable, Dict, List, Optional
 from .. import audio, config
 from ..models import Script
 
-Synth = Callable[[str, Path], Path]
+Synth = Callable[..., Path]  # (text, out_wav, rate=1.0)
 
 
 def load_pronunciations() -> Dict[str, str]:
@@ -24,6 +24,10 @@ def apply_pronunciations(text: str, lex: Dict[str, str]) -> str:
     for word in sorted(lex, key=len, reverse=True):
         text = re.sub(rf"(?<![\w-]){re.escape(word)}(?![\w-])", lex[word], text)
     return text
+
+
+def words_per_minute(text: str, seconds: float) -> float:
+    return len(text.split()) / seconds * 60 if seconds > 0 else 0.0
 
 
 def run(script: Script, workdir: Path, lex: Dict[str, str], synth: Optional[Synth] = None,
@@ -40,5 +44,11 @@ def run(script: Script, workdir: Path, lex: Dict[str, str], synth: Optional[Synt
         text = apply_pronunciations(line.spoken, lex)
         raw = workdir / f"{i:02d}_{line.scene}.raw.wav"
         synth(text, raw)
-        clips[i] = audio.trim_silence(raw, workdir / f"{i:02d}_{line.scene}.wav")
+        clip = audio.trim_silence(raw, workdir / f"{i:02d}_{line.scene}.wav")
+        # Chirp voices rush short lines; if slowing it in the edit can't fix that, ask for a slower read
+        wpm = words_per_minute(line.spoken, audio.duration(clip))
+        if wpm > config.MAX_LINE_WPM / config.VOICE_MIN_SPEED:
+            synth(text, raw, rate=max(0.7, round(200 / wpm, 2)))
+            clip = audio.trim_silence(raw, clip)
+        clips[i] = clip
     return clips

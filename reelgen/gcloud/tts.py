@@ -13,13 +13,14 @@ from .. import config
 URL = "https://texttospeech.googleapis.com/v1/text:synthesize"
 
 
-def synthesize(text: str, out_wav: Path) -> Path:
+def synthesize(text: str, out_wav: Path, rate: float = 1.0) -> Path:
     if not config.GOOGLE_API_KEY:
         raise RuntimeError("GOOGLE_API_KEY is not set")
     body = {
         "input": {"text": text},
         "voice": {"languageCode": config.TTS_LANGUAGE, "name": config.TTS_VOICE},
-        "audioConfig": {"audioEncoding": "LINEAR16", "sampleRateHertz": config.TTS_SAMPLE_RATE},
+        "audioConfig": {"audioEncoding": "LINEAR16", "sampleRateHertz": config.TTS_SAMPLE_RATE,
+                        **({"speakingRate": round(rate, 2)} if rate != 1.0 else {})},
     }
     for attempt in range(4):
         r = requests.post(URL, json=body, headers={"X-Goog-Api-Key": config.GOOGLE_API_KEY}, timeout=60)

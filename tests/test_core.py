@@ -145,3 +145,17 @@ def test_activity_records_each_agent():
     assert "30.0-second" in ag[A.EDITOR]["task"]
     assert "4%" in ag[A.TESTER]["task"]
     json.dumps(data)  # stays plain JSON for the dashboard
+
+
+def test_rushed_line_is_slowed_but_others_keep_speed():
+    scenes = ["hook", "problem", "define", "steps", "payoff"]
+    # hook: 9 words in 2.6s (208 wpm natural) -> slowed; the rest are normal
+    t = editor.plan_timing([2.6, 4.4, 4.9, 11.0, 4.6], scenes, words=[9, 13, 10, 33, 12])
+    assert t.speeds[0] < 1.0 and 9 / (2.6 / t.speeds[0]) * 60 <= config.MAX_LINE_WPM + 1
+    assert t.speeds[3] == t.speed
+    assert abs(sum(t.durations) - 30) < 1e-6
+
+
+def test_voiced_span_ignores_silence_at_edges():
+    quiet = [(0.0, 0.3), (2.1, 2.9)]
+    assert abs(tester._voiced_span(quiet, 0.0, 2.6) - 1.8) < 1e-9
