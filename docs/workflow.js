@@ -1,26 +1,26 @@
-// "Show Workflow": the crew drawn as a glowing neural network. Each agent is a neuron, the
+// "Show Workflow": the crew drawn as a neural network. Each agent is a neuron, the
 // main hand-offs carry travelling signal pulses, and faint synapses link neighbouring layers.
 // Hovering (or tapping) an agent shows what it does and its last task. Last tasks come from the
 // "agents" section of backlog/topics.json, which the pipeline and the publisher fill in as they run.
 (() => {
   const crew = () => window.ReelGenCrew;
   const WHERE = {
-    you: { label: "You", color: "#ffd23f" },
-    cloud: { label: "Daily Claude session, 7:47 AM", color: "#22d3ee" },
-    google: { label: "Google Drive", color: "#60a5fa" },
-    laptop: { label: "Your laptop, 10 AM and 7 PM", color: "#b9a5ff" },
-    social: { label: "Social accounts", color: "#ff4d8d" },
+    you: { label: "You", color: "#f2c230" },
+    cloud: { label: "Daily Claude session, 7:47 AM", color: "#c3c9d2" },
+    google: { label: "Google Drive", color: "#6f97c9" },
+    laptop: { label: "Your laptop, 10 AM and 7 PM", color: "#c08a4a" },
+    social: { label: "Social accounts", color: "#c4524f" },
   };
 
   const AGENTS = {
     you_add: { where: "you", does: "You add topics in this dashboard and put them in order. The top of the queue is made each morning." },
-    collaborator: { where: "cloud", does: "The orchestrator. Each morning Rin picks the top queued topic, hands the work from agent to agent, and puts the topic back in the queue (or marks it failed) if something breaks." },
+    collaborator: { where: "cloud", does: "The orchestrator. Each morning Harper picks the top queued topic, hands the work from agent to agent, and puts the topic back in the queue (or marks it failed) if something breaks." },
     researcher: { where: "cloud", step: 1, does: "Researches the topic on the web: a plain-English definition, the problem it solves, how it works, key facts with sources, analogies and common misconceptions." },
     scripter: { where: "cloud", step: 2, does: "Turns the research into a 30-second narration (5 lines, about 70 words), plus the Instagram caption, hashtags and YouTube title. Spells hard words the way the voice should say them." },
     director: { where: "cloud", step: 3, does: "Designs the infographic: the text, icons and layout of the five animated scenes (hook, problem, definition, steps, payoff)." },
     sound_engineer: { where: "cloud", step: 4, does: "Records each line with Google Text-to-Speech (Chirp 3 HD voice), using the pronunciation dictionary." },
     editor: { where: "cloud", step: 5, does: "Renders the 1080x1920 animation, times each scene to its line, fits the video to exactly 30 seconds and sets the loudness for Reels and Shorts." },
-    tester: { where: "cloud", step: 6, does: "Listens back with Google Speech-to-Text. Checks the narration matches the script, words are pronounced right, pacing and pauses, length, resolution and loudness. Mispronounced words go back to DJ Sora with a new spelling." },
+    tester: { where: "cloud", step: 6, does: "Listens back with Google Speech-to-Text. Checks the narration matches the script, words are pronounced right, pacing and pauses, length, resolution and loudness. Mispronounced words go back to Miles with a new spelling." },
     drive: { where: "google", step: 7, does: "The finished video, its caption and test results are uploaded to Google Drive to wait for you. Drive holds at most 5 videos." },
     drive_keeper: { where: "cloud", does: "Cleans up Drive at the start of each run. Deletes a video 3 days after it is posted to both sites, deletes rejected videos right away, and pauses production rather than delete anything you have not approved." },
     you_approve: { where: "you", step: 8, does: "You watch the video from this dashboard and click Approve, Re-make or Reject. Nothing is posted without your Approve." },
@@ -72,13 +72,13 @@
     }
 
     const making = topics.find((t) => t.status === "in_progress");
-    if (making) Object.assign(out.collaborator, { now: `Working on "${making.title}" right now!`, live: true });
+    if (making) Object.assign(out.collaborator, { now: `In production: "${making.title}".`, live: true });
     const queued = topics.filter((t) => t.status === "queued").length;
-    out.you_add.now = queued ? `${queued} topic${queued > 1 ? "s" : ""} in the queue.` : "The queue is empty. Add a topic!";
+    out.you_add.now = queued ? `${queued} topic${queued > 1 ? "s" : ""} in the queue.` : "The queue is empty. Add a topic.";
     const ready = topics.filter((t) => t.status === "ready").length;
-    if (ready) Object.assign(out.you_approve, { now: `${ready} video${ready > 1 ? "s" : ""} waiting for you!`, live: true });
+    if (ready) Object.assign(out.you_approve, { now: `${ready} cut${ready > 1 ? "s" : ""} waiting for your review.`, live: true });
     const toPost = topics.filter((t) => ["approved", "posting"].includes(t.status)).length;
-    if (toPost) Object.assign(out.publisher, { now: `${toPost} approved video${toPost > 1 ? "s" : ""} to deliver next run.`, live: true });
+    if (toPost) Object.assign(out.publisher, { now: `${toPost} approved video${toPost > 1 ? "s" : ""} to publish on the next run.`, live: true });
     const inDrive = topics.filter((t) => t.drive_file_id && !t.drive_deleted_at).length;
     out.drive.now = `${inDrive} of 5 video slots in use.`;
     return out;
@@ -87,7 +87,7 @@
   function summary(act) {
     const parts = [act.collaborator.now, act.you_approve.now, act.publisher.now].filter(Boolean);
     if (!parts.length) parts.push((data.topics || []).some((t) => t.status === "queued")
-      ? "All quiet. We make the next video at 7:47 AM, Senpai!" : "The queue is empty, Senpai! Give us a topic for tomorrow's run.");
+      ? "Standing by. Next production run at 7:47 AM." : "The queue is empty. Add a topic for the next run at 7:47 AM.");
     return parts.join(" ");
   }
 
@@ -155,8 +155,8 @@
     }
     return `<svg class="nn-edges" width="${width}" height="${height}" aria-hidden="true">
       <defs>
-        <marker id="nnArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5eead4"/></marker>
-        <marker id="nnArrowLoop" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ffd23f"/></marker>
+        <marker id="nnArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f2c230"/></marker>
+        <marker id="nnArrowLoop" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8b929c"/></marker>
         <filter id="nnGlow" filterUnits="userSpaceOnUse" x="-50" y="-50" width="${width + 100}" height="${height + 100}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>${out.join("")}</svg>`;
   }
@@ -164,10 +164,10 @@
   function nodeHtml(id, p, a, labelW) {
     const P = crew().PERSONAS[id], A = AGENTS[id], c = WHERE[A.where].color;
     const bad = a.last && a.last.ok === false;
-    const status = a.live ? a.now : a.last ? `${bad ? "Trouble" : "Last task"} ${ago(a.last.at)}` : "Zzz... no tasks yet";
+    const status = a.live ? a.now : a.last ? `${bad ? "Trouble" : "Last task"} ${ago(a.last.at)}` : "Standing by";
     return `<button type="button" class="neuron${a.live ? " live" : ""}${bad ? " bad" : ""}" data-id="${id}"
       style="left:${p.x - labelW / 2}px;top:${p.y - p.r}px;width:${labelW}px;--c:${c};--d:${p.r * 2}px" aria-describedby="wfTip">
-      <span class="orb">${crew().avatar(id, p.r * 2, false)}${A.step ? `<span class="step">${A.step}</span>` : ""}</span>
+      <span class="orb">${crew().avatar(id, p.r * 2)}${A.step ? `<span class="step">${A.step}</span>` : ""}</span>
       <span class="n-name">${esc(P.name)}</span><span class="n-role">${esc(P.role)}</span>
       <span class="n-status">${esc(status)}</span></button>`;
   }
@@ -179,9 +179,8 @@
       ? `<div class="tip-last${last.ok === false ? " bad" : ""}"><b>Last task</b> · ${esc(ago(last.at))}<br>${esc(last.task)}
          ${last.topic ? `<br><span class="tip-topic">Topic: ${esc(last.topic)}</span>` : ""}</div>`
       : `<div class="tip-last"><b>Last task</b><br><span class="tip-topic">Nothing yet. This fills in after the first run.</span></div>`;
-    return `<div class="tip-head">${crew().avatar(id, 52, false)}<div><div class="tip-name">${esc(P.name)}</div>
+    return `<div class="tip-head">${crew().avatar(id, 44)}<div><div class="tip-name">${esc(P.name)}</div>
         <div class="tip-where" style="color:${w.color}">${esc(P.role)} · ${esc(w.label)}</div></div></div>
-      <div class="tip-bubble">“${esc(P.line)}”</div>
       <p>${esc(A.does)}</p>${a.now ? `<div class="tip-now">${esc(a.now)}</div>` : ""}${lastHtml}`;
   }
 
@@ -194,7 +193,8 @@
     const act = activity();
     const { pos, height, wide, labelW } = layout(width);
     $("#wfNowText").textContent = summary(act);
-    $("#wfNowAvatar").innerHTML = crew().avatar("collaborator", 56, false);
+    $("#wfNowAvatar").innerHTML = crew().icon(act.collaborator.live ? "rec" : "film", 18);
+    $("#wfNowAvatar").className = act.collaborator.live ? "rec on" : "rec";
     box.style.height = height + "px";
     box.innerHTML = svg(pos, wide, width, height)
       + Object.keys(AGENTS).map((id) => nodeHtml(id, pos[id], act[id], labelW)).join("");
