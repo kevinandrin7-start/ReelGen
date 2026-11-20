@@ -1,0 +1,36 @@
+{
+ "topic": "What is RAG?",
+ "one_line_definition": "RAG (retrieval-augmented generation) lets an AI chatbot look up relevant information from a trusted source first, then use it to write its answer.",
+ "why_it_matters": "It makes AI answers more accurate, current and checkable without the cost of retraining the model, and lets companies point AI at their own documents.",
+ "pain_point": "You ask a chatbot about something recent or about your own company's documents, and it confidently gives an out-of-date or made-up answer, because its knowledge froze when training ended.",
+ "how_it_works": [
+  "Your documents are turned into numbers (embeddings) and stored in a vector database, like a searchable library.",
+  "Your question is also turned into numbers and matched against that library.",
+  "The most relevant passages are pulled out (retrieved).",
+  "Those passages are added to your question (the prompt is augmented).",
+  "The AI writes its answer from them (generation) and can cite the sources."
+ ],
+ "key_facts": [
+  {"fact": "The term RAG was coined in a 2020 paper led by Patrick Lewis, with coauthors from Facebook AI Research, University College London and New York University.", "source_url": "https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/"},
+  {"fact": "The paper 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks' was first submitted to arXiv on 22 May 2020.", "source_url": "https://arxiv.org/abs/2005.11401"},
+  {"fact": "The original RAG models used a dense vector index of Wikipedia as their non-parametric memory, accessed with a neural retriever.", "source_url": "https://arxiv.org/abs/2005.11401"},
+  {"fact": "RAG models generated more specific, diverse and factual language than a parametric-only baseline.", "source_url": "https://arxiv.org/abs/2005.11401"},
+  {"fact": "LLM training data is static, which gives the model a knowledge cut-off date; LLMs can present false or out-of-date information.", "source_url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/"},
+  {"fact": "RAG improves LLM output without retraining the model, making it a cost-effective way to add new data.", "source_url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/"},
+  {"fact": "The user query is converted to a vector, matched against a vector database, and the retrieved data is added to the prompt before the LLM answers.", "source_url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/"},
+  {"fact": "RAG gives models sources they can cite, like footnotes, so users can check claims; it reduces (does not eliminate) the chance of hallucination.", "source_url": "https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/"},
+  {"fact": "Lewis apologized for the unflattering acronym, saying no one had a better name when the paper was written.", "source_url": "https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/"}
+ ],
+ "analogies": [
+  "A judge who sends a court clerk to the law library for the exact precedent before ruling (NVIDIA's analogy).",
+  "An open-book exam instead of answering from memory.",
+  "Footnotes in a research paper that let you check the claim."
+ ],
+ "misconceptions": [
+  "RAG does not retrain or change the model; it only adds retrieved text to the prompt.",
+  "RAG reduces hallucinations but does not eliminate them; answers are only as good as the retrieved sources.",
+  "RAG is not one product; it is a general technique that works with nearly any LLM and data source."
+ ],
+ "acronym_expansion": "Retrieval-Augmented Generation",
+ "sources": ["https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/", "https://aws.amazon.com/what-is/retrieval-augmented-generation/", "https://arxiv.org/abs/2005.11401"]
+}

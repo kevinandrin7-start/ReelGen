@@ -1,0 +1,30 @@
+{
+ "hook": {"line1": "AI gave you an", "line2": "outdated answer?", "icon": "robot", "subline": "Here's the fix in 30 sec"},
+ "problem": {
+  "headline": "Its knowledge is frozen",
+  "pains": [
+   {"text": "Knowledge has a cut-off date", "icon": "clock"},
+   {"text": "Ask about recent events: it guesses", "icon": "chat"},
+   {"text": "Sounds confident anyway", "icon": "warning"}
+  ],
+  "tags": ["OUTDATED", "GUESSING"]
+ },
+ "define": {"intro": "The fix:", "term": "RAG", "expansion": "Retrieval-Augmented Generation", "analogy": "An open-book exam for AI"},
+ "steps": {
+  "label": "HOW RAG WORKS",
+  "steps": [
+   {"title": "Store your docs", "sub": "In a searchable library", "icon": "database"},
+   {"title": "Match the question", "sub": "Find what's most relevant", "icon": "search"},
+   {"title": "Pull out passages", "sub": "Add them to your question", "icon": "docs"},
+   {"title": "AI answers", "sub": "Using them, with sources", "icon": "robot"}
+  ],
+  "result": "Current answers you can check"
+ },
+ "payoff": {
+  "line1": "RAG =",
+  "highlight": "open-book exam",
+  "line3": "for AI",
+  "bad": {"title": "Without RAG", "sub": "Answers from frozen memory"},
+  "good": {"title": "With RAG", "sub": "Looks it up, cites sources"}
+ }
+}

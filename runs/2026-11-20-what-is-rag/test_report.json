@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "resolution",
+      "passed": true,
+      "detail": "1080x1920"
+    },
+    {
+      "name": "frame rate",
+      "passed": true,
+      "detail": "30.00 fps"
+    },
+    {
+      "name": "length",
+      "passed": true,
+      "detail": "30.00s"
+    },
+    {
+      "name": "audio track",
+      "passed": true,
+      "detail": "aac"
+    },
+    {
+      "name": "loudness",
+      "passed": true,
+      "detail": "-15.2 LUFS (target -14.0)"
+    },
+    {
+      "name": "true peak",
+      "passed": true,
+      "detail": "-1.4 dBTP"
+    },
+    {
+      "name": "narration matches script",
+      "passed": true,
+      "detail": "word error rate 1%; differs at: its"
+    },
+    {
+      "name": "each scene's line is right",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "pacing",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no awkward pauses",
+      "passed": true,
+      "detail": "ok"
+    }
+  ],
+  "transcript": "ever had AI confidently give you an outdated answer ask about something recent and it guesses because it's knowledge froze when training ended that's where rag comes in retrieval augmented generation first your documents get stored in a searchable library then your question is matched against it the most relevant passages are pulled out added to your question and the AI writes its answer from them with sources it's an open book exam for AI follow for more",
+  "wer": 0.012345679012345678,
+  "scene_wer": [
+    0.0,
+    0.071,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "misheard_words": [
+    "its"
+  ]
+}

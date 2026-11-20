@@ -5,15 +5,24 @@
       "id": "t_4e643ed5c4",
       "title": "What is RAG?",
       "notes": "",
-      "status": "in_progress",
+      "status": "ready",
       "order": 1795127646.739,
       "created_at": "2026-11-19T22:34:06Z",
-      "updated_at": "2026-11-20T12:50:22Z",
+      "updated_at": "2026-11-20T12:52:19Z",
       "attempts": 1,
       "error": null,
       "posted": {},
       "started_at": "2026-11-20T12:50:22Z",
-      "run_dir": "runs/2026-11-20-what-is-rag"
+      "run_dir": "runs/2026-11-20-what-is-rag",
+      "finished_at": "2026-11-20T12:52:19Z",
+      "drive_file_id": "1vopesRpdWIM3qhit80j-b1JM0zgr0H_b",
+      "drive_link": "https://drive.google.com/file/d/1vopesRpdWIM3qhit80j-b1JM0zgr0H_b/view?usp=drivesdk",
+      "caption": "Why does AI sometimes give answers that are out of date? RAG fixes that by letting the AI look things up in trusted documents before it answers, and show its sources. No retraining needed. Where would you plug RAG in first?\n\n#RAG #AI #LLM #MachineLearning #TechExplained #LearnAI",
+      "youtube_title": "What is RAG? AI explained in 30 seconds #Shorts",
+      "youtube_description": "RAG, or Retrieval-Augmented Generation, lets an AI look up relevant passages from trusted documents before it answers, so its replies are more current and can cite sources. It works without retraining the model. Sources: AWS, NVIDIA, and Lewis et al. (2020).",
+      "test_passed": true,
+      "test_summary": "All checks passed",
+      "thumbnail": "runs/2026-11-20-what-is-rag/thumbnail.jpg"
     },
     {
       "id": "t_689eb7c5d9",
@@ -270,52 +279,52 @@
   ],
   "agents": {
     "collaborator": {
-      "task": "Picked the next topic from the queue and started the run.",
+      "task": "Finished the run and sent the video for approval.",
       "ok": true,
       "topic": "What is RAG?",
-      "at": "2026-11-20T12:50:22Z"
+      "at": "2026-11-20T12:52:19Z"
     },
     "researcher": {
-      "task": "Researched the topic from 6 sources, with 6 key facts and 2 analogies.",
+      "task": "Researched the topic from 3 sources, with 9 key facts and 3 analogies.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "scripter": {
-      "task": "Wrote a 79-word, 5-line script and the captions.",
+      "task": "Wrote a 76-word, 5-line script and the captions.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "director": {
       "task": "Planned the 5 scenes: hook, problem, definition, steps and payoff.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "sound_engineer": {
       "task": "Recorded the narration (5 lines).",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "editor": {
       "task": "Rendered and mixed a 30.0-second 1080x1920 video.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "tester": {
-      "task": "All checks passed Word error rate 1%.",
+      "task": "All checks passed. Word error rate 1%.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:56Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "drive": {
       "task": "Stored the video, waiting for your approval.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:52:19Z"
     },
     "publisher": {
       "task": "Posting failed: YouTube upload failed: none of the expected controls appeared (screenshot: C:\\ReelGen\\ReelGen-main\\publisher\\screenshots\\20261119-192140-youtube-error.png)",

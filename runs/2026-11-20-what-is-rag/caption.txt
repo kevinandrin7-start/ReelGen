@@ -1,0 +1,3 @@
+Why does AI sometimes give answers that are out of date? RAG fixes that by letting the AI look things up in trusted documents before it answers, and show its sources. No retraining needed. Where would you plug RAG in first?
+
+#RAG #AI #LLM #MachineLearning #TechExplained #LearnAI
