@@ -5,13 +5,15 @@
       "id": "t_4e643ed5c4",
       "title": "What is RAG?",
       "notes": "",
-      "status": "queued",
+      "status": "in_progress",
       "order": 1795127646.739,
       "created_at": "2026-11-19T22:34:06Z",
-      "updated_at": "2026-11-19T22:34:06Z",
-      "attempts": 0,
+      "updated_at": "2026-11-20T12:50:22Z",
+      "attempts": 1,
       "error": null,
-      "posted": {}
+      "posted": {},
+      "started_at": "2026-11-20T12:50:22Z",
+      "run_dir": "runs/2026-11-20-what-is-rag"
     },
     {
       "id": "t_689eb7c5d9",
@@ -268,10 +270,10 @@
   ],
   "agents": {
     "collaborator": {
-      "task": "Finished the run and sent the video for approval.",
+      "task": "Picked the next topic from the queue and started the run.",
       "ok": true,
-      "topic": "What is AI?",
-      "at": "2026-11-19T23:13:00Z"
+      "topic": "What is RAG?",
+      "at": "2026-11-20T12:50:22Z"
     },
     "researcher": {
       "task": "Researched the topic from 6 sources, with 6 key facts and 2 analogies.",
