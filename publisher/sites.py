@@ -99,6 +99,53 @@ def check_youtube_channel(page: Page, handle: str) -> str:
     return want
 
 
+def _dismiss_studio_popups(page: Page) -> None:
+    """Close Studio's occasional welcome/feature dialogs that sit on top of the page."""
+    for name in ("Got it", "Dismiss", "Close", "Continue", "No thanks", "Skip"):
+        try:
+            b = page.get_by_role("button", name=name, exact=True)
+            if b.count() and b.first.is_visible():
+                b.first.click(timeout=2000)
+                pause(0.5, 1)
+        except Exception:
+            pass
+
+
+def _choose_youtube_file(page: Page, channel_id: str, video: Path) -> None:
+    """Open Studio's upload dialog and give it the video. youtube.com/upload doesn't always open the
+    dialog (it can land on the dashboard or the content page), so try a few ways."""
+    dialog_input = page.locator('ytcp-uploads-file-picker input[type="file"], ytcp-uploads-dialog input[type="file"]')
+    attempts = [
+        lambda: None,  # youtube.com/upload may already have opened it
+        # the Dashboard's "Upload videos" card button
+        lambda: first_visible(page, page.get_by_role("button", name=re.compile("^upload videos?$", re.I)),
+                              timeout=10000).click(),
+        lambda: page.goto(f"https://studio.youtube.com/channel/{channel_id}/videos/upload?d=ud",
+                          wait_until="domcontentloaded"),
+        lambda: (first_visible(page, page.locator("#create-icon"), page.get_by_role("button", name="Create"),
+                               timeout=20000).click(),
+                 pause(),
+                 first_visible(page, page.locator("#text-item-0"),
+                               page.get_by_role("menuitem", name=re.compile("upload video", re.I)),
+                               page.get_by_text(re.compile("^Upload videos?$", re.I)), timeout=10000).click()),
+    ]
+    for step in attempts:
+        try:
+            step()
+            pause(2, 3)
+            _dismiss_studio_popups(page)
+            dialog_input.first.wait_for(state="attached", timeout=15000)
+            dialog_input.first.set_input_files(str(video))
+            return
+        except PWTimeout:
+            continue
+    # last resort: click "Select files" and answer the file chooser
+    with page.expect_file_chooser(timeout=20000) as fc:
+        first_visible(page, page.locator("#select-files-button"),
+                      page.get_by_role("button", name=re.compile("select files", re.I)), timeout=15000).click()
+    fc.value.set_files(str(video))
+
+
 def post_youtube(page: Page, video: Path, title: str, description: str, dry_run: bool,
                  channel_id: str) -> Optional[str]:
     try:
@@ -109,7 +156,7 @@ def post_youtube(page: Page, video: Path, title: str, description: str, dry_run:
         if CHANNEL_RE.search(page.url).group(1) != channel_id:  # checked again right before uploading
             raise PostError(f"YouTube Studio opened channel {CHANNEL_RE.search(page.url).group(1)}, "
                             f"not {channel_id}. Nothing was posted.")
-        page.locator('input[type="file"]').first.set_input_files(str(video))
+        _choose_youtube_file(page, channel_id, video)
         pause(3, 5)
         title_box = first_visible(page, page.locator("#title-textarea #textbox"),
                                   page.get_by_label(re.compile("title", re.I)).locator("[contenteditable]"), timeout=60000)
@@ -192,7 +239,7 @@ def post_instagram(page: Page, video: Path, caption: str, dry_run: bool, handle:
             pause()
         except PWTimeout:
             pass
-        page.locator('input[type="file"]').first.set_input_files(str(video))
+        _choose_youtube_file(page, channel_id, video)
         pause(3, 5)
         try:  # "Video posts are now shared as reels"
             _click_text_button(page, "OK", timeout=5000)
