@@ -239,7 +239,7 @@ def post_instagram(page: Page, video: Path, caption: str, dry_run: bool, handle:
             pause()
         except PWTimeout:
             pass
-        _choose_youtube_file(page, channel_id, video)
+        page.locator('input[type="file"]').first.set_input_files(str(video))
         pause(3, 5)
         try:  # "Video posts are now shared as reels"
             _click_text_button(page, "OK", timeout=5000)

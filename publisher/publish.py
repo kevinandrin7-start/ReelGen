@@ -88,9 +88,10 @@ def cmd_run(args) -> int:
             log.info("posting as YouTube %s (%s)", YOUTUBE_HANDLE, yt_channel)
         except sites.PostError as e:
             log.error("%s", e)
+            msg = f"Stopped before posting: {e}"[:300]
             if not args.dry_run:
                 bl.update(lambda d: d.setdefault("agents", {}).update(publisher={
-                    "task": f"Stopped before posting: {e}"[:300], "ok": False, "topic": None, "at": now()}),
+                    "task": msg, "ok": False, "topic": None, "at": now()}),
                     "Publisher: wrong YouTube channel")
             ctx.close()
             return 1
