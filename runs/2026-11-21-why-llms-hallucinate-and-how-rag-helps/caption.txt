@@ -1,0 +1,3 @@
+Chatbots don't lie on purpose. They predict words that sound right, and nothing checks if they're true. RAG has the AI look up trusted documents first, which cuts down on made-up answers (though it can't remove them all). Have you ever caught an AI making something up?
+
+#AI #LLM #RAG #AIHallucination #TechExplained #LearnAI

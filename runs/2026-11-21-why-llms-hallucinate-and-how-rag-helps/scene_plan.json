@@ -1,0 +1,31 @@
+{
+ "hook": {"line1": "Why does AI", "line2": "make things up?", "icon": "robot", "subline": "Here's why in 30 sec"},
+ "problem": {
+  "headline": "Confident, but wrong",
+  "pains": [
+   {"text": "Cited court cases that don't exist", "icon": "docs"},
+   {"text": "Lawyers were fined for it", "icon": "warning"},
+   {"text": "Sounded totally sure anyway", "icon": "chat"}
+  ],
+  "tags": ["MADE UP", "FAKE CASES"]
+ },
+ "define": {"intro": "The fix:", "term": "RAG", "expansion": "Retrieval-Augmented Generation", "analogy": "Fewer hallucinations"},
+ "steps": {
+  "label": "HALLUCINATION + RAG",
+  "steps": [
+   {"title": "Predicts next word", "sub": "Learned from training patterns", "icon": "brain"},
+   {"title": "Sounds right, not true", "sub": "No built-in fact check", "icon": "cross"},
+   {"title": "Guessing is rewarded", "sub": "Over saying I don't know", "icon": "numbers"},
+   {"title": "RAG looks it up", "sub": "Searches trusted docs first", "icon": "search"},
+   {"title": "Answers from them", "sub": "Grounded in real text", "icon": "check"}
+  ],
+  "result": "Fewer made-up answers"
+ },
+ "payoff": {
+  "line1": "RAG =",
+  "highlight": "open-book exam",
+  "line3": "not a guess",
+  "bad": {"title": "Without RAG", "sub": "Guesses from memory"},
+  "good": {"title": "With RAG", "sub": "Looks it up first"}
+ }
+}

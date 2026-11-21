@@ -1,0 +1,41 @@
+{
+  "title": "Why LLMs hallucinate, and how RAG helps",
+  "lines": [
+    {
+      "scene": "hook",
+      "narration": "Why does AI make things up so confidently?",
+      "spoken": "Why does A I make things up so confidently?"
+    },
+    {
+      "scene": "problem",
+      "narration": "Two lawyers got fined for citing court cases that a chatbot completely made up.",
+      "spoken": "Two lawyers got fined for citing court cases that a chatbot completely made up."
+    },
+    {
+      "scene": "define",
+      "narration": "It's called a hallucination, and RAG can help reduce it.",
+      "spoken": "It's called a hallucination, and rag can help reduce it."
+    },
+    {
+      "scene": "steps",
+      "narration": "An LLM predicts the next word, aiming for what sounds right, not what's true. Training rewards guessing over saying I don't know. RAG, Retrieval-Augmented Generation, looks up trusted documents first, then answers from them.",
+      "spoken": "An L L M predicts the next word, aiming for what sounds right, not what's true. Training rewards guessing over saying I don't know. Rag, Retrieval-Augmented Generation, looks up trusted documents first, then answers from them."
+    },
+    {
+      "scene": "payoff",
+      "narration": "It's an open-book exam instead of a guess. Follow for more!",
+      "spoken": "It's an open-book exam instead of a guess. Follow for more!"
+    }
+  ],
+  "instagram_caption": "Chatbots don't lie on purpose. They predict words that sound right, and nothing checks if they're true. RAG has the AI look up trusted documents first, which cuts down on made-up answers (though it can't remove them all). Have you ever caught an AI making something up?",
+  "hashtags": [
+    "#AI",
+    "#LLM",
+    "#RAG",
+    "#AIHallucination",
+    "#TechExplained",
+    "#LearnAI"
+  ],
+  "youtube_title": "Why AI makes things up, and how RAG helps #Shorts",
+  "youtube_description": "Large language models predict the next word, aiming for what sounds plausible rather than what is true, and standard training rewards guessing over admitting uncertainty. RAG (Retrieval-Augmented Generation) has the model look up trusted documents first, which reduces but doesn't eliminate hallucinations. Sources: OpenAI (2025), IBM, Shuster et al. (2021), Mata v. Avianca (2023)."
+}

@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "resolution",
+      "passed": true,
+      "detail": "1080x1920"
+    },
+    {
+      "name": "frame rate",
+      "passed": true,
+      "detail": "30.00 fps"
+    },
+    {
+      "name": "length",
+      "passed": true,
+      "detail": "30.00s"
+    },
+    {
+      "name": "audio track",
+      "passed": true,
+      "detail": "aac"
+    },
+    {
+      "name": "loudness",
+      "passed": true,
+      "detail": "-15.3 LUFS (target -14.0)"
+    },
+    {
+      "name": "true peak",
+      "passed": true,
+      "detail": "-1.3 dBTP"
+    },
+    {
+      "name": "narration matches script",
+      "passed": true,
+      "detail": "word error rate 2%; differs at: it, what"
+    },
+    {
+      "name": "each scene's line is right",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "pacing",
+      "passed": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no awkward pauses",
+      "passed": true,
+      "detail": "ok"
+    }
+  ],
+  "transcript": "why does a I make things up so confidently two lawyers got fined for citing court cases that a chatbot completely made up is called a hallucination and rag can help reduce it an llm predicts the next word aiming for what sounds right not was true training rewards guessing over saying I don't know rag retrieval augmented generation looks up trusted documents first then answers from them it's an open book exam instead of a guess follow for more",
+  "wer": 0.024390243902439025,
+  "scene_wer": [
+    0.0,
+    0.0,
+    0.1,
+    0.027,
+    0.0
+  ],
+  "misheard_words": [
+    "it",
+    "what"
+  ]
+}
