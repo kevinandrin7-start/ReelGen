@@ -5,6 +5,7 @@ channel accounts.
   python publish.py login              # one time: opens Chrome so you can sign in to both sites
   python publish.py run                # post every approved video (oldest first)
   python publish.py run --dry-run      # fill everything in but stop before Publish/Share
+                                       #   (YouTube keeps the upload as a private draft: delete it in Studio)
   python publish.py run --max 1        # post at most one video this run
 """
 from __future__ import annotations
@@ -88,9 +89,10 @@ def cmd_run(args) -> int:
             log.info("posting as YouTube %s (%s)", YOUTUBE_HANDLE, yt_channel)
         except sites.PostError as e:
             log.error("%s", e)
+            msg = f"Stopped before posting: {e}"[:300]
             if not args.dry_run:
                 bl.update(lambda d: d.setdefault("agents", {}).update(publisher={
-                    "task": f"Stopped before posting: {e}"[:300], "ok": False, "topic": None, "at": now()}),
+                    "task": msg, "ok": False, "topic": None, "at": now()}),
                     "Publisher: wrong YouTube channel")
             ctx.close()
             return 1
@@ -107,7 +109,10 @@ def cmd_run(args) -> int:
                 if not posted.get("youtube"):
                     url = sites.post_youtube(page, video, t.get("youtube_title") or title,
                                              t.get("youtube_description") or "", args.dry_run, yt_channel)
-                    if not args.dry_run:
+                    if args.dry_run:
+                        log.warning("dry run: YouTube keeps every uploaded file as a private draft. Delete "
+                                    "\"%s\" in YouTube Studio > Content (it is never published).", title)
+                    else:
                         posted.update(youtube=now(), youtube_url=url)
                         bl.set(tid, f"Posted to YouTube: {title}", posted={"youtube": now(), "youtube_url": url})
                 if not posted.get("instagram") and INSTAGRAM_HANDLE:
